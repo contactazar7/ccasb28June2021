@@ -1,0 +1,18 @@
+.THIS .leftPaddingClass {
+    padding-left: 2rem;
+}
+ 
+.THIS .pillSize{
+ /*width:50%;
+    height:50%;*/
+    width: 100% !important;
+    height: 36px !important;
+}
+.THIS.slds-modal__header{
+ background: #e22319; 
+} 
+
+/*Modal Body*/
+.THIS.myModal .slds-modal__content{
+ background: #e6ee6e; 
+}

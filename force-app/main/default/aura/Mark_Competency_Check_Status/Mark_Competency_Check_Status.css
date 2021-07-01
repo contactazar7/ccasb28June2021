@@ -1,0 +1,11 @@
+.THIS.slds-modal__container{
+    max-width: 80rem !important;
+    width: 80% !important;
+}
+.THIS.slds-truncate{   
+white-space: break-spaces !important;
+font-size: 8px !important;
+font-weight: normal !important;
+text-align: center !important;
+margin: 0 auto !important;
+}

@@ -1,0 +1,107 @@
+<aura:component controller="Mark_Attendance_ros" implements="force:appHostable,lightning:isUrlAddressable" access="global">
+    <aura:html tag="style">
+        .slds-template__container
+        {
+        background-color: #FAFAF9;
+        border-radius: 35px;
+        }
+    </aura:html>
+    <aura:attribute name="id" type="String" />
+    <aura:attribute name="Message" type="boolean" default="false" description="use for store and display attendance list return from server"/>
+    <aura:attribute name="TotalNumberOfRecord" type="integer" default="0" description="use for display Number of records"/>
+    <aura:attribute name="data" type="Object" />
+    <aura:attribute name="columns" type="List" />
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    <aura:handler name="init" value="{!this}" action="{!c.onPageReferenceChange}"/>
+    <aura:handler name="change" value="{!v.pageReference}" action="{!c.onPageReferenceChange}"/>
+    <aura:handler name="dataTableSaveEvent" event="c:dataTableSaveEvent" action="{!c.saveTableRecords}"/>
+    <aura:handler name="dataTableSaveEvent" event="c:dataTableSaveEvent" action="{!c.handleRecordSelectEvent}"/>
+    <aura:attribute name="selectedRecords" type="List" />
+    <aura:attribute name="showModal" type="boolean" default="false"/>
+    <aura:attribute name="ModuleList" type="List" default="[]" description="Module Picklist Values"/>
+    <aura:attribute name="selectedModuleList" type="List" default="[]" description="Selected Module Picklist Values"/>
+    <aura:attribute name="ratio" type="string"/>
+    
+    <div class="slds-template__container">
+        <lightning:spinner variant="brand" size="large" aura:id="Id_spinner" class="slds-hide" />
+        <div class="slds-m-around_medium" style="font-family:verdana;courier">
+            <div>
+                <h1 style="text-align:center;font-stretch:expanded;font-family:Monospace;font-size:30px;">ROSTER ATTENDANCE REGISTER</h1>
+            </div>
+        </div>
+        <div style="margin-left:100px;"> 
+            <lightning:layout >
+                <lightning:layoutItem size="4" padding="around-large" flexibility="auto">
+                    <P style="margin-left:15px;"><b>Count of Records : <lightning:badge label="{!v.TotalNumberOfRecord}"/></b></P>
+                    <P style="margin-left:15px;"><b>Ratio : <lightning:badge label="{!v.ratio}"/></b></P>
+				</lightning:layoutItem>
+                <lightning:layoutItem size="8" padding="around-large" flexibility="auto"> 
+                    <p style="text-align:right;"> 
+                       <aura:if isTrue="{!!empty(v.selectedRecords)}"><lightning:button onclick="{!c.showModel}" 
+                                                                                         variant="brand"
+                                                                                         class="slds-button slds-button_brand"
+                                                                                         label="Mark Modules"
+                                                                                         />
+                        </aura:if> 
+                        <lightning:button onclick="{!c.navigate}" variant="brand"
+                                          class="slds-button slds-button_brand"
+                                          label="Back to Roster"
+                                          />
+                     <!--   <aura:if isTrue="{!!empty(v.selectedRecords)}">
+                            <lightning:buttonMenu alternativeText="Show more" onselect="{!c.handleSelect}" menuAlignment="right">
+                                <lightning:menuItem value="markaspresent" label="Mark as Present"/>
+                                <lightning:menuItem value="markasabsent" label="Mark as Absent" />
+                            </lightning:buttonMenu>
+                        </aura:if> -->
+                    </p>
+                </lightning:layoutItem> 
+            </lightning:layout>
+        </div>
+        <aura:if isTrue="{!v.showModal}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" 
+                     aria-modal="true" aria-describedby="modal-content-id-1" 
+                     class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.hideModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                            <p><b>Modules Covered</b></p></h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-m-around_xx-large">
+                            <lightning:dualListbox aura:id="selectModule"
+                                                   name="Modules"
+                                                   label="Select Modules"
+                                                   sourceLabel="Available Modules"
+                                                   selectedLabel="Selected Modules"
+                                                   options="{!v.ModuleList }"
+                                                   value="{!v.selectedModuleList}"
+                                                   onchange="{!c.handleModuleChange}"/>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.hideModel }"/>
+                        <lightning:button variant="brand"
+                                          label="Save"
+                                          title="Save"
+                                          onclick="{!c.saveDetails}"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+        <aura:if isTrue="{!v.data.length>0}">
+            <c:CNAAttendaceSearch aura:id="datatableId" auraId="datatableId" columns="{!v.columns}" data="{!v.data}" showRowNumberColumn="true" />
+        </aura:if>  
+        <aura:if isTrue="{!v.isLoading}">
+            <lightning:spinner alternativeText="Loading.." variant="brand"/>
+        </aura:if> 
+    </div>
+</aura:component>

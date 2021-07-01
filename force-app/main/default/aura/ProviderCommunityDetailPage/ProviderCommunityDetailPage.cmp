@@ -1,0 +1,942 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes,force:appHostable" controller="currentUserInfoCtrl" access="global" >
+    <!-- Handler to call function when page is loaded initially -->
+    <aura:handler name="init" action="{!c.getContactsList}" value="{!this}" />
+    <!-- List of contacts stored in attribute -->
+    <aura:attribute name="contactList" type="List" />
+    <aura:attribute name="classList" type="List" />
+    <aura:attribute name="attendenceList" type="String" />
+    <aura:attribute name="providerandaffiliatList" type="List" />
+    <aura:attribute name="hidetable" type="boolean" default="true" />
+    <aura:attribute name="disfield" type="boolean" default="true" />
+    <aura:attribute name="hidebutton" type="boolean" default="false" />
+    <aura:attribute name="hiderecordeditform" type="boolean" default="false" />
+    
+    <aura:attribute name="hell" type="String" default="Hello" />
+    <aura:attribute name="providerid" type="String"  />
+    <aura:attribute name="defaulteditbutton" type="boolean" default="true" />
+    <aura:attribute name="aftercancel" type="boolean" default="false" />
+    <aura:attribute name="cancebuttonenable" type="boolean" default="false" />
+    <aura:attribute name="consumerrelatedclass" type="String" />
+    <aura:attribute name="consumerrelatedproandconaffi" type="List" />
+    
+    <aura:html tag="style"> 
+        table, th, td {
+        border: 1px solid black; 
+        border-collapse: collapse;
+       
+        }
+        span, p
+        {
+        font-size: 14px !important;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 14px;
+        float: left;
+        }
+        button, a
+        {
+        font-size: 14px !important;
+        font-family: 'Quicksand', sans-serif;
+        }
+        .widget-content-area
+        {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 14px !important;
+        }
+        button, input, optgroup, select, textarea
+        {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 14px !important;
+        font-weight: normal;
+        }
+        .slds-textarea
+        {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 14px !important;
+        font-weight: normal;
+        }
+        label, legend
+        {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 14px !important;
+        font-weight: normal;
+        }
+        .name-gender .slds-form-element__static
+        {
+                font-size: 14px !important;
+
+        }
+        .widget-content-area {
+    -webkit-box-shadow: 0 4px 6px 0 rgb(85 85 85 / 9%), 0 1px 20px 0 rgb(0 0 0 / 8%), 0px 1px 11px 0px rgb(0 0 0 / 6%);
+    -moz-box-shadow: 0 4px 6px 0 rgba(85, 85, 85, 0.0901961), 0 1px 20px 0 rgba(0, 0, 0, 0.08), 0px 1px 11px 0px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px 0 rgb(85 85 85 / 9%), 0 1px 20px 0 rgb(0 0 0 / 8%), 0px 1px 11px 0px rgb(0 0 0 / 6%);
+}
+.widget-content-area {
+    -webkit-box-shadow: 0 4px 6px 0 rgb(85 85 85 / 9%), 0 1px 20px 0 rgb(0 0 0 / 8%), 0px 1px 11px 0px rgb(0 0 0 / 6%);
+    -moz-box-shadow: 0 4px 6px 0 rgba(85, 85, 85, 0.0901961), 0 1px 20px 0 rgba(0, 0, 0, 0.08), 0px 1px 11px 0px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px 0 rgb(85 85 85 / 9%), 0 1px 20px 0 rgb(0 0 0 / 8%), 0px 1px 11px 0px rgb(0 0 0 / 6%);
+}
+.widget-content-area {
+    padding: 20px;
+    position: relative;
+    background-color: #fff;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}        
+    </aura:html>
+    <!-- Lightning card to show contacts -->
+    <ltng:require styles="{! $Resource.Bootstap}"/> 
+    <ltng:require styles="{! $Resource.quicksand}"/>
+    
+
+    <lightning:tabset selectedTabId="one">
+        <lightning:tab label="Detail" id="one"> 
+            <aura:iteration items="{!v.contactList}" var="contact">
+                <lightning:card variant="Narrow"  class="slds-text-heading_small">
+                    <div class ="slds-text-heading_small" style=" font-style: courier; font-weight: bold;font-size:160%;">
+                       <center> <H2>  Welcome   {!contact.Name}</H2></center></div>
+                    <br/><br/>
+                    <!-- Body of lightning card starts here -->
+                    <!-- <p class="slds-p-horizontal_small"> -->                
+                    <!--<aura:set attribute="actions">
+                <lightning:button variant="brand" label="Edit Provider" title="Brand action" onclick="{! c.handleClick }" />
+                
+            </aura:set>-->
+                    <aura:if isTrue="{!v.hidetable}">
+                        <!-- <div class="slds-box slds-theme_default" style="max-width: 900px;">-->
+                        
+                        
+                        <!--<table class="slds-table slds-table_bordered slds-no-row-hover slds-table_cell-buffer">-->
+                        <!--<div class="slds-m-left_small">-->
+                        
+                        
+                        <aura:iteration items="{!v.contactList}" var="contact">
+                            
+                            <div class="row">
+                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 layout-top-spacing">
+                                    <div class="widget-content widget-content-area" style="padding: 20px;
+                                                                                           position: relative;
+                                                                                           background-color: #fff;
+                                                                                           border-bottom-left-radius: 6px;
+                                                                                           height: 330px;                                                                                         border-bottom-right-radius: 6px;
+                                                                                           -webkit-box-shadow: 0 4px 6px 0 rgb(85 85 85 / 9%), 0 1px 20px 0 rgb(0 0 0 / 8%), 0px 1px 11px 0px rgb(0 0 0 / 6%);
+                                                                                           -moz-box-shadow: 0 4px 6px 0 rgba(85, 85, 85, 0.0901961), 0 1px 20px 0 rgba(0, 0, 0, 0.08), 0px 1px 11px 0px rgba(0, 0, 0, 0.06);
+                                                                                           box-shadow: 0 4px 6px 0 rgb(85 85 85 / 9%), 0 1px 20px 0 rgb(0 0 0 / 8%)">
+                                        <div class="text-center user-info">
+                                            
+                                            <p style="padding-bottom: 20px;"></p>
+                                            <p class="" style="text-align: center;
+                                                               position: relative;
+                                                               right: 15%;"> </p> 
+                                            <div class="user-info-list">
+                                                
+                                                <div class=""> 
+                                                    <div class="slds-card slds-box_large">
+                                                        
+                                                        <div>
+                                                            <div class="slds-grid slds-gutters">
+                                                                <div class="slds-col">
+                                                                    <span> <lightning:icon iconName="utility:profile"   size="medium"/>
+                                                                        &nbsp;&nbsp;&nbsp;{!contact.Name}</span></div></div><br/>
+                                                            <div class="slds-grid slds-gutters">
+                                                                <div class="slds-col">
+                                                                    <span> 
+                                                                        <lightning:icon iconName="utility:log_a_call" alternativeText="Preview" title="email"   size="small"/>
+                                                                        &nbsp;&nbsp;&nbsp;{!contact.Phone}  </span>
+                                                                </div></div><br/>
+                                                            <div class="slds-grid slds-gutters">
+                                                                <div class="slds-col">
+                                                                    <span> 
+                                                                             <lightning:icon iconName="utility:date_input" alternativeText="Preview" title="email"   size="small"/>
+
+                                                                        &nbsp;&nbsp;&nbsp;{!contact.Birthdate}</span></div></div><br/>
+                                                            <div class="slds-grid slds-gutters">
+                                                                <div class="slds-col">
+                                                                    <span> 
+                                                                        <lightning:icon iconName="utility:email"   size="small"/>
+                                                                        &nbsp;&nbsp;&nbsp; {!contact.Email__c}</span></div></div>
+                                                        </div>
+                                                    </div>
+                                                </div>                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                               <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 layout-top-spacing">
+
+    <div class="skills layout-spacing ">
+        <div class="widget-content widget-content-area">
+            <h3 class="">My Profile</h3>
+            <!--<p>The following is your record as found in our database. Incase of any incorrect information, please <a href="#" data-toggle="modal" data-target="#supportModalLabel">click here</a> to contact us.</p>-->
+
+            <div>
+                                <!--<div class="center"> <div class="slds-border_top"></div></div>-->
+                               <lightning:recordViewForm recordId="{!contact.Id}" objectApiName="Contact">
+
+                                   <div class="name-gender"><lightning:outputField fieldName="Name"/></div>
+                                
+                               <div class="center"> <div class="slds-border_top"></div></div><br/>
+                                <lightning:outputField fieldName="CCA_Provider_ID__c" />
+                                   
+                                <div class="center"> <div class="slds-border_top"></div></div><br/>
+                                   <div class="name-gender"><lightning:outputField fieldName="Student_ID__c" /></div>
+                                <div class="center"> <div class="slds-border_top"></div></div><br/>
+                                <div class="name-gender"><lightning:outputField fieldName="Gender__c" /></div>
+                                <div class="center"> <div class="slds-border_top"></div></div><br/>
+                                <lightning:outputField fieldName="Email__c" />
+                                <div class="center"> <div class="slds-border_top"></div></div>
+                                <lightning:outputField fieldName="Date_Of_Birth__c" />
+                                <div class="center"> <div class="slds-border_top"></div></div><br/>
+                                <lightning:outputField fieldName="Phone" />
+                                <div class="center"> <div class="slds-border_top"></div></div><br/>
+                                
+                                <lightning:outputField fieldName="MailingAddress" />
+                                
+                                
+                                
+                            </lightning:recordViewForm>
+                
+                
+                
+                
+                
+                
+                            </div>
+            
+
+        </div>
+    </div>
+</div>
+                                
+                                
+                            </div>
+                            
+                            <!--   <div class="slds-box slds-theme_shade slds-theme_alert-texture">
+                                
+                                <div class="slds-box slds-theme_default">
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_1-of-4">
+                                            <lightning:select name="select2" label="Salutation"   value="{!contact.Salutation}" disabled="{!v.disfield}">
+                                                <option value="">choose one...</option>
+                                                <option value="Mr.">Mr.</option>
+                                                <option value="Ms.">Ms.</option>
+                                                <option value="Mrs.">Mrs.</option>
+                                                <option value="Dr.">Dr.	</option>
+                                                <option value="Prof.">	Prof.</option>
+                                            </lightning:select>
+                                            
+                                            
+                                            
+                                            <lightning:input value="{!contact.FirstName}"  label="FirstName" disabled="{!v.disfield}"/>
+                                            <lightning:input value="{!contact.LastName}"  label="FirstName" disabled="{!v.disfield}"/>
+                                            <lightning:input  value="{!contact.CCA_Provider_ID__c}"  label="CCA Provider ID" disabled="{!v.disfield}"/>
+                                            <lightning:input  value="{!contact.Student_ID__c}"  label="Student ID" disabled="{!v.disfield}"/>
+                                            
+                                            <lightning:select name="select1" label="Gender"   value="{!contact.Gender__c}"  disabled="{!v.disfield}">
+                                                <option value="">choose one...</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                            </lightning:select>
+                                            <lightning:input type="email" value="{!contact.Email__c}"  label="Email" disabled="{!v.disfield}"/>
+                                        </div>
+                                        &nbsp; &nbsp; &nbsp; &nbsp; 
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <div style="max-width: 400px;"> <lightning:input type="date" value="{!contact.Date_Of_Birth__c}"  label="Date Of Birth" disabled="{!v.disfield}"/>
+                                                <lightning:input type="tel"  label="Phone Number" value="{!contact.Phone_number__c}" pattern="\([0-9]{3}\) [0-9]{3}-[0-9]{4}" disabled="{!v.disfield}"/>
+                                                
+                                                <lightning:inputAddress
+                                                                        addressLabel="Address"
+                                                                        streetLabel="Street"
+                                                                        cityLabel="City"
+                                                                        countryLabel="Country"
+                                                                        provinceLabel="Province"
+                                                                        postalCodeLabel="PostalCode"
+                                                                        street="{!contact.MailingStreet}"
+                                                                        city="{!contact.MailingCity}"
+                                                                        country="{!contact.MailingCountry}"
+                                                                        province="{!contact.MailingState}"
+                                                                        postalCode="{!contact.MailingPostalCode}"
+                                                                        disabled="{!v.disfield}"/></div>
+                                            
+                                        </div>
+                                    </div></div>
+                            </div>-->
+             
+                        </aura:iteration>
+                    </aura:if>
+                    
+                    
+                    <div aura:id="recordEditForm" class="formHide">
+                        <aura:iteration items="{!v.contactList}" var="contact">
+                            <div class="slds-box slds-theme_shade slds-theme_alert-texture">
+                                
+                                <div class="slds-box slds-theme_default">
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_1-of-4">
+                                            <lightning:select name="select2" label="Salutation"   value="{!contact.Salutation}" >
+                                                <option value="">choose one...</option>
+                                                <option value="Mr.">Mr.</option>
+                                                <option value="Ms.">Ms.</option>
+                                                <option value="Mrs.">Mrs.</option>
+                                                <option value="Dr.">Dr.	</option>
+                                                <option value="Prof.">	Prof.</option>
+                                            </lightning:select>
+                                            
+                                            
+                                            
+                                            <lightning:input value="{!contact.FirstName}"  label="FirstName"/>
+                                            <lightning:input value="{!contact.LastName}"  label="LastName"/>
+                                            <lightning:input  value="{!contact.CCA_Provider_ID__c}"  label="CCA Provider ID" disabled="{!v.disfield}"/>
+                                            <lightning:input  value="{!contact.Student_ID__c}"  label="Student ID" disabled="{!v.disfield}"/>
+                                            
+                                            <lightning:select name="select1" label="Gender"   value="{!contact.Gender__c}" >
+                                                <option value="">choose one...</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                            </lightning:select>
+                                            <lightning:input type="email" value="{!contact.Email__c}"  label="Email"/>
+                                        </div>
+                                        &nbsp; &nbsp; &nbsp; &nbsp; 
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <div style="max-width: 400px;"> <lightning:input type="date" value="{!contact.Date_Of_Birth__c}"  label="Date Of Birth"/>
+                                                <lightning:input type="tel"  label="Phone Number" value="{!contact.Phone_number__c}" pattern="\([0-9]{3}\) [0-9]{3}-[0-9]{4}" />
+                                                
+                                                <lightning:inputAddress
+                                                                        addressLabel="Address"
+                                                                        streetLabel="Street"
+                                                                        cityLabel="City"
+                                                                        countryLabel="Country"
+                                                                        provinceLabel="Province"
+                                                                        postalCodeLabel="PostalCode"
+                                                                        street="{!contact.MailingStreet}"
+                                                                        city="{!contact.MailingCity}"
+                                                                        country="{!contact.MailingCountry}"
+                                                                        province="{!contact.MailingState}"
+                                                                        postalCode="{!contact.MailingPostalCode}"
+                                                                        /></div>
+                                            
+                                        </div>
+                                    </div></div>
+                                
+                                <br />
+                            </div>
+                            
+                        </aura:iteration>
+                    </div>
+                    <!-- </p>-->
+                    <!-- Lightning card actions -->
+                    <aura:set attribute="actions">
+                        <!-- New button added -->
+                        <!--<aura:if isTrue="{!v.hidebutton}">
+                        <lightning:button variant="Neutral"  aura:id="button1" label="Cancel" name="Cancel" onclick="{!c.cancel}" />
+            </aura:if>-->
+                        <!-- Edit/Save button added -->
+                        
+                        <lightning:button variant="brand" label="Edit" aura:id="button2" name="edit" onclick="{!c.editContacts}" />
+                        
+                        <!-- <aura:if isTrue="{!v.aftercancel}">
+
+                                           <lightning:button variant="brand" label="Edit" aura:id="button2" name="edit" onclick="{!c.editContacts}" />
+                        </aura:if>
+                                            <aura:if isTrue="{!v.cancebuttonenable}">
+
+                                                <lightning:button variant="brand-outline" label="Cancel"  name="edit" onclick="{!c.cancel}" />
+                        </aura:if>-->
+                        
+                    </aura:set>
+                </lightning:card> </aura:iteration>
+        </lightning:tab>
+        <lightning:tab label="Related" id="two">
+            <article class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__figure">
+                            <span  title="contact">
+                                <lightning:icon iconName="action:edit_relationship" size="xx-small" />
+                                
+                                <span class="slds-assistive-text">Enrolled Classes</span>
+                            </span>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                <a href="#" class="slds-card__header-link slds-truncate" title="Enrolled Classes  ">
+                                    <span>Enrolled Classes </span>
+                                </a>
+                            </h2>
+                        </div>
+                        
+                    </header>
+                </div>
+                <div class="slds-card__body">                            <div class="slds-box slds-theme_shade slds-theme_alert-texture " >
+                    <ui:scrollerWrapper class="sWrapTest">
+                        <ul class="testDiv">  
+                           <!-- <table class="slds-table slds-table_cell-buffer slds-no-row-hover" style="background-color:#ffb3b3">-->
+                                                            <table class="slds-table slds-table_cell-buffer slds-no-row-hover" >
+
+                                <thead>
+                                    <tr  style="background-color:#ffb3b3">
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Name">Name</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Type">Enrollment #</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Type">Provider Name</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Type">Class Name</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Phone">Enrollment Status</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Gender">CRP  Status</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Date Of Birth">CRP Valid till</div>
+                                        </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <aura:iteration items="{!v.classList}" var="contact">
+                                        
+                                        <!--<tr class="slds-hint-parent">-->
+                                        <tr >
+                                            
+                                            <th scope="row" style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="Adam Choi">{!contact.Name}</div>
+                                                
+                                            </th>
+                                            <td style="font-size: 15px;color:black;">
+                                                <div class="slds-truncate" title="Email">{!contact.Enrollment__c}</div>
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                <div class="slds-truncate" title="Email">{!contact.Contact__r.Name}</div>
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                
+                                                <div class="slds-truncate" title="Email">{!contact.Class__r.Name}</div>
+                                                
+                                                
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                
+                                                <div class="slds-truncate" title="{!contact.Phone}">{!contact.Enrolment_Status_C__c}</div>
+                                                
+                                                
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="{!contact.Phone}">{!contact.CPR_Status__c}</div>
+                                                
+                                                
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="{!contact.Date_Of_Birth__c}">{!contact.CPR_Valid_Till__c}</div>
+                                                
+                                                
+                                            </td>
+                                            
+                                        </tr>                   
+                                    </aura:iteration>
+                                </tbody>
+                            </table></ul></ui:scrollerWrapper></div>
+                </div>
+                <!--<footer class="slds-card__footer">
+<a class="slds-card__footer-action" href="#">View All
+<span class="slds-assistive-text">Contacts</span>
+</a>
+</footer>-->
+            </article><br/>
+            
+            
+            <lightning:card variant="Narrow" title="Attendance" iconName="standard:contact" >
+                
+                <div class="slds-box slds-theme_shade slds-theme_alert-texture " >
+                    <!--  <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-table_resizable-cols slds-border_left slds-border_right" style="width:50px;">  -->      
+                    <div style="overflow-x:auto;">
+                        
+                        <table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered  slds-border_left slds-border_right" role="grid" aria-label="Example table in a Card" >
+                            
+                            <thead>
+                                <tr class="slds-text-title_caps">
+                                    <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                        <div class="slds-truncate" title="Name">Attendance Id</div>
+                                    </th>
+                                    <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                        <div class="slds-truncate" title="Type">Class</div>
+                                    </th>
+                                    <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                        <div class="slds-truncate" title="Type">Class Date</div>
+                                    </th>
+                                    <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                        <div class="slds-truncate" title="Type">Attendance Status</div>
+                                    </th>
+                                    <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                        <div class="slds-truncate" title="Phone">Student RSVP</div>
+                                    </th>
+                                    
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <aura:iteration items="{!v.attendenceList[0].Attendance__r}" var="contact">
+                                    <!-- <tr class="slds-hint-parent">-->
+                                    <tr >
+                                        
+                                        
+                                        <th scope="row" style="font-size: 15px;color:black;" >
+                                            
+                                            <div class="slds-truncate" title="Adam Choi">{!contact.Name}</div>
+                                            
+                                        </th>
+                                        <td style="font-size: 15px;color:black;">
+                                            <div class="slds-truncate" title="Email">{!contact.Class__r.Name}</div>
+                                        </td>
+                                        <td style="font-size: 15px;color:black;">
+                                            <div class="slds-truncate" title="Date__c">{!contact.Date__c}</div>
+                                        </td>
+                                        <td style="font-size: 15px;color:black;">
+                                            
+                                            
+                                            <div class="slds-truncate" title="Status__c">{!contact.Status__c}</div>
+                                            
+                                            
+                                        </td>
+                                        <td style="font-size: 15px;color:black;">
+                                            
+                                            
+                                            <div class="slds-truncate" title="{!contact.Students_RSVP__c}">{!contact.Students_RSVP__c}</div>
+                                            
+                                            
+                                        </td>
+                                        
+                                        
+                                    </tr>                   
+                                </aura:iteration>
+                            </tbody>
+                        </table></div></div></lightning:card><br/>
+            <article class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__figure">
+                            <span  title="contact">
+                                <lightning:icon iconName="standard:bot_training" />
+                                
+                                <span class="slds-assistive-text">Provider+Consumer Affiliation</span>
+                            </span>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                <a href="#" class="slds-card__header-link slds-truncate" title="Provider+Consumer Affiliation  ">
+                                    <span>Provider+Consumer Affiliation </span>
+                                </a>
+                            </h2>
+                        </div>
+                        
+                    </header>
+                </div>
+                <div class="slds-card__body">                            
+                    <div class="slds-box slds-theme_shade slds-theme_alert-texture " >
+                        <div style="overflow-x:auto;">
+                            <!--<table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered slds-table_fixed-layout slds-border_left slds-border_right" role="grid" aria-label="Example table in a Card">-->
+                            <table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered  slds-border_left slds-border_right" role="grid" aria-label="Example table in a Card">
+                                
+                                
+                                <thead>
+                                    <tr class="slds-text-title_caps">
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Name">Affiliation Name</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Type">CCA Consumer ID</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Type">CCA Provider ID</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Type">Home Care Consumer</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Phone">Provider</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Gender">RelationShip</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Date Of Birth">Is Consumer a relative of Provider</div>
+                                        </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <aura:iteration items="{!v.providerandaffiliatList}" var="contact">
+                                        
+                                        <!--  <tr class="slds-hint-parent">-->    
+                                        
+                                        <tr >
+                                            
+                                            
+                                            <th scope="row" style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="Adam Choi">{!contact.Name}</div>
+                                                
+                                            </th>
+                                            <td style="font-size: 15px;color:black;">
+                                                <div class="slds-truncate" title="Email">{!contact.CCA_Consumer_ID__c}</div>
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                <div class="slds-truncate" title="Email">{!contact.CCA_Provider_ID__c}</div>
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                
+                                                <div class="slds-truncate" title="Email">{!contact.Home_Care_Consumer__r.Name}</div>
+                                                
+                                                
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                
+                                                <div class="slds-truncate" title="{!contact.Provider_s_Name__c}">{!contact.Provider_s_Name__c}</div>
+                                                
+                                                
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="{!contact.Relationship__c}">{!contact.Relationship__c}</div>
+                                                
+                                                
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="{!contact.Is_Consumer_a_relative_of_Provider__c}">{!contact.Is_Consumer_a_relative_of_Provider__c}</div>
+                                                
+                                                
+                                            </td>
+                                            
+                                        </tr>      
+                                        
+                                    </aura:iteration>
+                                </tbody>
+                            </table></div></div></div>
+                
+                <!--<footer class="slds-card__footer">
+<a class="slds-card__footer-action" href="#">View All
+<span class="slds-assistive-text">Contacts</span>
+</a>
+</footer>-->
+            </article>
+            <article class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        
+                        <div class="slds-media__figure">
+                            <span  title="contact">
+                                <lightning:icon iconName="standard:bot_training" />
+                                
+                                <span class="slds-assistive-text">Provider Participant Form</span>
+                                
+                            </span>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                <a href="#" class="slds-card__header-link slds-truncate" title="Provider Participant Form ">
+                                    <span>Provider Participant Form  </span>
+                                </a>
+                            </h2>
+                        </div>
+                        <!--  <lightning:button variant="brand" label="New" title="Brand action" onclick="{! c.gotoURL }" />-->
+                        
+                    </header>
+                </div>
+                <div class="slds-card__body">                            
+                    <div class="slds-box slds-theme_shade slds-theme_alert-texture " >
+                        <table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered slds-table_fixed-layout slds-border_left slds-border_right" role="grid" aria-label="Example table in a Card">
+                            <thead>
+                                <!--<tr class="slds-text-title_caps">-->
+                                <tr >
+                                    
+                                    <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                        <div class="slds-truncate" title="Name"> Provider Participant FormLink</div>
+                                    </th>
+                                    <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                        <div class="slds-truncate" title="Type">Status</div>
+                                    </th>
+                                    
+                                    <!-- <th scope="col">
+                                        <div class="slds-truncate" title="Gender">Name</div>
+                                    </th>-->
+                                    
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <aura:iteration items="{!v.attendenceList}" var="contat" indexVar="idx">
+                                    <aura:if isTrue="{!contat.Participation_form_submitted__c == true}">
+                                        
+                                        <tr >
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            <th scope="row" style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="Adam Choi"> <span onclick="{!c.gotoURL}" data-target="{!contat.Id}"><a>https://cube84ectest.tfaforms.net/58={!contat.Id}</a></span></div>
+                                                
+                                            </th>
+                                            
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title=" ">Submitted</div>
+                                                
+                                                
+                                            </td>
+                                            
+                                            
+                                            
+                                            
+                                        </tr>
+                                        <aura:set attribute="else"><tr >
+                                            
+                                            <th scope="row" style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="Adam Choi"><span onclick="{!c.gotoURL}" data-target="{!contat.Id}"><a>https://cube84ectest.tfaforms.net/58=</a>{!contat.id}</span></div>
+                                                
+                                            </th>
+                                            
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="">Not Yet Submitted</div>
+                                                
+                                                
+                                            </td></tr></aura:set></aura:if></aura:iteration>
+                            </tbody>
+                        </table></div></div>
+                
+                <!--<footer class="slds-card__footer">
+<a class="slds-card__footer-action" href="#">View All
+<span class="slds-assistive-text">Contacts</span>
+</a>
+</footer>-->
+            </article>
+            
+            <!--Consumer Data-->
+          <!--  <article class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__figure">
+                            <span  title="contact">
+                                <lightning:icon iconName="action:edit_relationship" size="xx-small" />
+                                
+                                <span class="slds-assistive-text">Enrolled Classes</span>
+                            </span>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                <a href="#" class="slds-card__header-link slds-truncate" title="Enrolled Classes  ">
+                                    <span>Enrolled Classes </span>
+                                </a>
+                            </h2>
+                        </div>
+                        
+                    </header>
+                </div>
+                <div class="slds-card__body">                            <div class="slds-box slds-theme_shade slds-theme_alert-texture " >
+                    <ui:scrollerWrapper class="sWrapTest">
+                        <ul class="testDiv">  
+                            <table class="slds-table slds-table_cell-buffer slds-no-row-hover" style="background-color:#ffb3b3">
+                                <thead>
+                                    <tr  style="background-color:#ffb3b3">
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Name">Name</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Type">Enrollment #</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Type">Consumer Name</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Type">Class Name</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Phone">Enrollment Status</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Gender">CRP  Status</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Date Of Birth">CRP Valid till</div>
+                                        </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <aura:iteration items="{!v.classList}" var="contact">
+                                        
+                                        
+                                        <tr style="background-color:  #d0cc95;color:#ffffff;">
+                                            
+                                            <th scope="row" style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="Adam Choi">{!contact.Name}</div>
+                                                
+                                            </th>
+                                            <td style="font-size: 15px;color:black;">
+                                                <div class="slds-truncate" title="Email">{!contact.Enrollment__c}</div>
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                <div class="slds-truncate" title="Email">{!contact.Consumer_Name__r.Name}</div>
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                
+                                                <div class="slds-truncate" title="Email">{!contact.Class__r.Name}</div>
+                                                
+                                                
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                
+                                                <div class="slds-truncate" title="{!contact.Phone}">{!contact.Enrolment_Status_C__c}</div>
+                                                
+                                                
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="{!contact.Phone}">{!contact.CPR_Status__c}</div>
+                                                
+                                                
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="{!contact.Date_Of_Birth__c}">{!contact.CPR_Valid_Till__c}</div>
+                                                
+                                                
+                                            </td>
+                                            
+                                        </tr>                   
+                                    </aura:iteration>
+                                </tbody>
+                            </table></ul></ui:scrollerWrapper></div>
+                </div></article><br/>
+            <article class="slds-card">
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__figure">
+                            <span  title="contact">
+                                <lightning:icon iconName="standard:bot_training" />
+                                
+                                <span class="slds-assistive-text">Provider+Consumer Affiliation</span>
+                            </span>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                <a href="#" class="slds-card__header-link slds-truncate" title="Provider+Consumer Affiliation  ">
+                                    <span>Provider+Consumer Affiliation </span>
+                                </a>
+                            </h2>
+                        </div>
+                        
+                    </header>
+                </div>
+                <div class="slds-card__body">                            
+                    <div class="slds-box slds-theme_shade slds-theme_alert-texture " >
+                        <div style="overflow-x:auto;">
+                            <table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered  slds-border_left slds-border_right" role="grid" aria-label="Example table in a Card">
+                                
+                                
+                                <thead>
+                                    <tr class="slds-text-title_caps">
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Name">Affiliation Name</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Type">CCA Consumer ID</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Type">CCA Provider ID</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Type">Home Care Consumer</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Phone">Provider</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Gender">RelationShip</div>
+                                        </th>
+                                        <th scope="col" style="background-color: #b0a94f;font-size: 15px;">
+                                            <div class="slds-truncate" title="Date Of Birth">Is Consumer a relative of Provider</div>
+                                        </th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <aura:iteration items="{!v.providerandaffiliatList}" var="contact">
+                                        
+                                        
+                                        
+                                        <tr style="background-color: #d0cc95;color:#ffffff;">
+                                            
+                                            
+                                            <th scope="row" style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="Adam Choi">{!contact.Name}</div>
+                                                
+                                            </th>
+                                            <td style="font-size: 15px;color:black;">
+                                                <div class="slds-truncate" title="Email">{!contact.CCA_Consumer_ID__c}</div>
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                <div class="slds-truncate" title="Email">{!contact.CCA_Provider_ID__c}</div>
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                
+                                                <div class="slds-truncate" title="Email">{!contact.Home_Care_Consumer__r.Name}</div>
+                                                
+                                                
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                
+                                                <div class="slds-truncate" title="{!contact.Provider_s_Name__c}">{!contact.Provider_s_Name__c}</div>
+                                                
+                                                
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="{!contact.Relationship__c}">{!contact.Relationship__c}</div>
+                                                
+                                                
+                                            </td>
+                                            <td style="font-size: 15px;color:black;">
+                                                
+                                                <div class="slds-truncate" title="{!contact.Is_Consumer_a_relative_of_Provider__c}">{!contact.Is_Consumer_a_relative_of_Provider__c}</div>
+                                                
+                                                
+                                            </td>
+                                            
+                                        </tr>      
+                                        
+                                    </aura:iteration>
+                                </tbody>
+                            </table></div></div></div>
+                
+                
+            </article>-->
+        </lightning:tab>
+        
+    </lightning:tabset>
+</aura:component>
