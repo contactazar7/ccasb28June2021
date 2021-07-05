@@ -18,7 +18,7 @@ public class EnrollmentTriggerHelper {
             allEnrollmentList = [Select Id, Contact__c, Status__c From SFDC_Enrollment__c Where Contact__c IN :providerIdSet];
             for(SFDC_Enrollment__c enrollmentRec :allEnrollmentList){
                 
-                if(enrollmentRec.Status__c == 'Enrolled' || enrollmentRec.Status__c == 'Student Requested for Removal'){
+                if(enrollmentRec.Status__c == 'Enrolled' || enrollmentRec.Status__c == 'Student Dropped'){
                     if(!enrolledCountMap.containsKey(enrollmentRec.Contact__c)){
                         enrolledCountMap.put(enrollmentRec.Contact__c, 0);
                     }

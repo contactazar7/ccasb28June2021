@@ -371,4 +371,38 @@ var s = component.get("v.Mondaystarttime");
         $A.enqueueAction(action);
     
 	},
+    mondayafterand: function(component,event,getInputkeyWord) {
+       
+     var action = component.get("c.onllyMonday");
+       // alert("date"+JSON.stringify("ss"+ component.get("v.Sundayendtime")));
+      // set param to method  
+        action.setParams({
+            
+            'sunendtime': component.get("v.Mondaytimingsforall.Monday_Timings_For_Testing__c")
+
+         });
+       
+      // set a callBack    
+        action.setCallback(this, function(response) {
+          $A.util.removeClass(component.find("mySpinner"), "slds-show");
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                var storeResponse = response.getReturnValue();
+              // if storeResponse size is equal 0 ,display No Result Found... message on screen.                }
+                if (storeResponse.length == 0) {
+                    component.set("v.Message", 'No Result Found...');
+                } else {
+                    component.set("v.Message", '');
+                }
+                // set searchResult list with return value from server.
+                        console.log("S"+JSON.stringify(storeResponse));
+
+                component.set("v.listOfSearchRecords", storeResponse);
+            }
+ 
+        });
+      // enqueue the Action  
+        $A.enqueueAction(action);
+    }
+   
 })

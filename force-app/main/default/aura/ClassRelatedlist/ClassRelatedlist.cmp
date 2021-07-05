@@ -64,7 +64,7 @@
                                 <div class="slds-truncate" title="last Name">Scheduled Date</div>
                             </th>
                             <th class="slds-text-title_caps" scope="col">
-                                <div class="slds-truncate" title="First Name">Choose Class Module</div>
+                                <div class="slds-truncate" title="First Name">Class Module</div>
                             </th>
 							<th class="slds-text-title_caps" scope="col">
                                 <div class="slds-truncate" title="First Name">start Time</div>
@@ -79,10 +79,10 @@
                                 <div class="slds-truncate" title="last Name">Total Present</div>
                             </th>
                              <th class="slds-text-title_caps" scope="col">
-                                <div class="slds-truncate" title="last Name">Total Absent</div>
-                            </th>
+                                <div class="slds-truncate" title="last Name">Make Up Created?</div>
+                            </th> 
                             <th class="slds-text-title_caps" scope="col">
-                                <div class="slds-truncate" title="last Name">Progress Report</div>
+                                <div class="slds-truncate" title="last Name">Progress</div>
                             </th>
                             <th class="slds-text-title_caps" scope="col">
                                 <div class="slds-truncate" title="last Name">Regular Type Attendance</div>

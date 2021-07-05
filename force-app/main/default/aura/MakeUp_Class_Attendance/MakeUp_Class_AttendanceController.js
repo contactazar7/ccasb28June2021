@@ -30,7 +30,7 @@
                     var toastMessage = $A.get("e.force:showToast");
                     toastMessage.setParams({
                         title : "Success",
-                        message : "Attendance records has created for the make-up class!",
+                        message : "Make-up class attendance records has created for the Class absentees!",
                         duration:'100',
                         key: 'info_alt',
                         type: 'success',

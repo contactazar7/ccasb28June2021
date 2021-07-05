@@ -2,15 +2,16 @@
     <aura:html tag="style">
         .slds-template__container
         {
-        background-color:#FFFFFF;
-        <!--background-color: #FAFAF9; -->
-        border-radius: 35px;
+        <!--background-color: #FAFAF9;-->
+        background-color: #FFFFFF;
+        border-radius: 20px;
         }
     </aura:html>
     <aura:attribute name="id" type="String" />
     <lightning:navigation aura:id="viewRosterService" />
     <aura:handler name="init" value="{!this}" action="{!c.onPageReferenceChange}"/>
     <aura:handler name="change" value="{!v.pageReference}" action="{!c.onPageReferenceChange}"/>
+    <aura:attribute name="loaded" type="Boolean" default="false" />
     <aura:attribute name="Message" type="boolean" default="false" description="use for store and display attendance list return from server"/>
     <aura:attribute name="TotalNumberOfRecord" type="integer" default="0" description="use for display Number of records"/>
     <aura:attribute name="attendancerecords" type="List"/>
@@ -22,8 +23,6 @@
     <aura:attribute name="contactrows" type="List"/>
     <aura:attribute name="selectedRowsCount" type="Integer" default="0"/>
     <aura:attribute name="rowsToupdate" type="Object" />
-
-    
     <div class="slds-template__container">
         <lightning:spinner variant="brand" size="large" aura:id="Id_spinner" class="slds-hide" />
         <div class="slds-m-around_medium" style="font-family:verdana;courier">
@@ -37,7 +36,7 @@
                     <b>Total Number of Records : <lightning:badge label="{!v.TotalNumberOfRecord}"/></b><br/>
                     <b>Selected Records: <lightning:badge label="{!v.selectedRowsCount }"/></b>
                 </span>
-                </P>
+            </P>
             <lightning:layout>
                 <lightning:layoutItem size="12" padding="around-small">
                     <div style="text-align: right;">
@@ -47,23 +46,34 @@
                                           />
                         <lightning:button onclick="{!c.viewRoster}" variant="brand"
                                           class="slds-button slds-button_brand"
-                                          label="Go-To Class View Roster"
+                                          label="Back to Class View Roster"
                                           />
-                        <lightning:button onclick="{!c.navigate}"
+                        <!--  <lightning:button onclick="{!c.navigate}"
                                           variant="brand"
                                           class="slds-button slds-button_brand"
                                           label="Go-To Roster Class"
-                                          /> 
+                                          /> -->
                     </div> 
                 </lightning:layoutItem> 
             </lightning:layout>
         </div>
         <div class="container" style="padding-top:50px;">
             <div > 
-                <lightning:datatable class="slds-table" data="{!v.searchResult}" columns="{!v.contactrows}" keyField="Id" onrowselection="{!c.updateSelectedRecs}" showRowNumberColumn="false"/>
+                <aura:if isTrue="{!v.loaded}">
+                    <lightning:datatable class="slds-table" data="{!v.searchResult}" columns="{!v.contactrows}" keyField="Id" onrowselection="{!c.updateSelectedRecs}" showRowNumberColumn="false"/>
+                    <aura:set attribute="else">
+                        <div aura:id="spinnerId" class="slds-spinner_container">
+                            <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                                <span class="slds-assistive-text">Loading...</span>
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                        </div>
+                    </aura:set>
+                </aura:if>
             </div>
         </div>
-        <aura:if isTrue="{!v.Message}">
+       <!-- <aura:if isTrue="{!v.Message}">
             <div class="slds-notify_container slds-is-relative">
                 <div class="slds-notify slds-notify_toast slds-theme_error" role="alert">
                     <span class="slds-assistive-text">error</span>
@@ -72,6 +82,6 @@
                     </div>
                 </div>
             </div> 
-        </aura:if>  
+        </aura:if>   -->
     </div>
 </aura:component>

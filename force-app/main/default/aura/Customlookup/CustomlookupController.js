@@ -30,6 +30,7 @@
                  if(storeResponse[0].RecordTypeId != null){
                      component.set("v.recordtypei", storeResponse[0].RecordTypeId )
                  }
+                 if(storeResponse[0].Count_of_Roster__c == 0){
                           if(storeResponse[0].Class_Course__c != null){
                       component.set("v.selectedRecord3.Name" ,storeResponse[0].Class_Course__r.Name ); 
        
@@ -47,6 +48,7 @@
                   
                       
                   }
+                 }
                   if(storeResponse[0].Instructor_ID__c != null){
                       component.set("v.selectedRecord.Name" ,storeResponse[0].Instructor_ID__r.Name ); 
        

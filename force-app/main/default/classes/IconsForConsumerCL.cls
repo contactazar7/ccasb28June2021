@@ -10,7 +10,7 @@ public class IconsForConsumerCL {
         conrec= new Consumer__c();
         if(contId!=null){
  
-        conrec= [Select id,Consumer_Participation_form_submitted__c,Authorization_Form_Submitted__c,Check_Enrollment__c
+        conrec= [Select id,Consumer_Participation_form_submitted__c,Single_Affiliate__c,Multi_Affiliate__c,No_Affiliate__c,Informed_Consent__c,Authorization_Form_Submitted__c,Check_Enrollment__c
                  from Consumer__c where id=:ApexPages.currentPage().getParameters().get('id')];
         system.debug('Id:'+conrec);
                         }}

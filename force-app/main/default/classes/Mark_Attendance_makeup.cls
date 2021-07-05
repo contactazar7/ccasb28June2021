@@ -1,16 +1,19 @@
+/**
+*  Created By: Azar- Cube84
+*  Mark_Attendance_makeup class will help us to Mark the Make-up class Attendees present or absent for the Class Scheduled session
+*  Also, This class used in the markMakeUpattendance lightning aura components to fetch the current attendees record from the particular make up
+*  with that status - 'Open'
+*/
 public with sharing class Mark_Attendance_makeup {
     @AuraEnabled
     public static List<Attendance__c> fetchAttendance(string recId){
-        string attendId = recId;
-        system.debug('Roster ID '+attendId);
         string status = 'Scheduled';
         List < Attendance__c > returnList = new List < Attendance__c >();
         set<string> makeup_id = new set<string>();
-        for(Make_Up_Class__c m: [select id, Roster_Name__c, Roster_Name__r.id, Class__c from Make_Up_Class__c where Roster_Name__r.id=:attendId and Status__c='Open']){
+        for(Make_Up_Class__c m: [select id, Roster_Name__c, Roster_Name__r.id, Class__c from Make_Up_Class__c where Roster_Name__r.id=:recId and Status__c='Open']){
             makeup_id.add(m.id);
         }
         system.debug('makeup_id '+makeup_id);
-        //string attendanceRecs = 'select id,Students_RSVP__c,Makeup_Class_status__c,createdDate,name, Class_Name__c, Enrollment_No__c, Roaster_No__c, Contact_Name__c, Class__c,Class__r.id,Class__r.Name, Contact__c, Contact__r.id, Contact__r.Name,Date__c, Enrollment__c, Roaster__c, Status__c, Make_Up_Class__c, Has_Make_Up_Class__c from Attendance__c where Make_Up_Class__r.id IN:makeup_id and Has_Make_Up_Class__c = true and Status__c =:status  ';
         string attendanceRecs = 'select id,Class_Type__c,Students_RSVP__c,Makeup_Class_status__c,createdDate,name, Class_Name__c, Enrollment_No__c, Roaster_No__c, Contact_Name__c, Class__c,Class__r.id,Class__r.Name, Contact__c, Contact__r.id, Contact__r.Name,Date__c, Enrollment__c, Roaster__c, Status__c, Make_Up_Class__c, Has_Make_Up_Class__c from Attendance__c where Make_Up_Class__r.id IN:makeup_id and Has_Make_Up_Class__c = true and Status__c =:status ';
         system.debug('attendanceRecs '+attendanceRecs);
         List< Attendance__c > listofAttendances = Database.query(attendanceRecs);
@@ -94,12 +97,13 @@ public with sharing class Mark_Attendance_makeup {
                 update makeUpList; 
                 system.debug('Updated makeUp record Id is'+ makeUpList);
             }
-            List<Roaster__c> rosterlist= [select id,Class_Name__c,Make_Up_Count__c,Status__c,Count_of_Enrollment__c,Total_Present__c from Roaster__c where Id IN:rosterid];
+            List<Roaster__c> rosterlist= [select id,Class_Name__c,Make_Up_Count__c,Az_Make_up_Open__c,Status__c,Count_of_Enrollment__c,Total_Present__c from Roaster__c where Id IN:rosterid];
             for(Roaster__c r: rosterlist){
                 if(r.Count_of_Enrollment__c == r.Total_Present__c){
                     r.Status__c = 'Completed';
                 }else if(r.Count_of_Enrollment__c <> r.Total_Present__c){
                     r.Status__c = 'Need to create Make-Up';
+                    r.Az_Make_up_Open__c = False;
                 }
             } 
             update rosterlist; 
@@ -149,12 +153,13 @@ public with sharing class Mark_Attendance_makeup {
                 update makeUpList; 
                 system.debug('Updated makeUp record Id is'+ makeUpList);
             }
-            List<Roaster__c> rosterlist= [select id,Class_Name__c,Make_Up_Count__c,Status__c,Count_of_Enrollment__c,Total_Present__c from Roaster__c where Id IN:rosterid];
+            List<Roaster__c> rosterlist= [select id,Class_Name__c,Make_Up_Count__c,Az_Make_up_Open__c,Status__c,Count_of_Enrollment__c,Total_Present__c from Roaster__c where Id IN:rosterid];
             for(Roaster__c r: rosterlist){
                 if(r.Count_of_Enrollment__c == r.Total_Present__c){
                     r.Status__c = 'Completed';
                 }else if(r.Count_of_Enrollment__c <> r.Total_Present__c){
                     r.Status__c = 'Need to create Make-Up';
+                    r.Az_Make_up_Open__c = False;
                 }
             } 
             update rosterlist; 
@@ -174,11 +179,11 @@ public with sharing class Mark_Attendance_makeup {
             system.debug('Make up or Roster recId === '+recId);
             if(string.valueof(Id.valueOf(recId).getsobjecttype()) == 'Roaster__c'){
                 system.debug(' Roster ');
-                makeUpList = [select id, Roster_Name__c, Roster_Name__r.id, Class__c,Class_Scheduled_Date__c,Status__c from Make_Up_Class__c where Roster_Name__c=:recId];
+                makeUpList = [select id, Roster_Name__c,Class__c,Status__c from Make_Up_Class__c where Roster_Name__c=:recId];
                 classId= makeUpList[0].Class__c;
             }else if(string.valueof(Id.valueOf(recId).getsobjecttype()) == 'Make_Up_Class__c'){
                 system.debug(' Make-Up ');
-                makeUpList = [select id, Roster_Name__c, Roster_Name__r.id, Class__c,Class_Scheduled_Date__c,Status__c from Make_Up_Class__c where id=:recId];
+                makeUpList = [select id, Roster_Name__c,Class__c,Status__c from Make_Up_Class__c where id=:recId];
                 classId= makeUpList[0].Class__c;
             } 
             system.debug(' classId ' + classId);

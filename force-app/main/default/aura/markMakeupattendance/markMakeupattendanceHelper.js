@@ -27,12 +27,14 @@
         
         var action = component.get("c.getPicklistValues");
         console.log('action=='+action);
+        component.set("v.loaded", false);
         action.setParams({
             objectAPIName: "Attendance__c",
             fieldAPIName: "Status__c",
         });
         action.setCallback(this,function(response){
             if(response.getState() === "SUCCESS"){
+                component.set("v.loaded", true);
                 console.log('response getState == '+response.getState());
                 console.log('response getValues == '+response.getReturnValue());
                 var types = [];
@@ -40,11 +42,11 @@
                 var cols = [
                     {label: "Name ", fieldName: "accountLink", type:"link", sortable: true, resizable:true, 
                      attributes:{label:{fieldName:"Name"}, title:"Click to View(New Window)", target:"_blank"}},
-                    {label: "Attendance Status", fieldName: "Status__c", editable: true, type:"picklist", selectOptions:types}, 
-                    {label: "Students RSVP", fieldName: "Students_RSVP__c", editable: false, type:"text"}, 
-                    {label: 'Class Scheduled Date', fieldName: 'Date__c', type: 'Date'},
-                    {label: 'Contact Name', fieldName: 'Contact_Name__c', type: 'Formula'},
+                    {label: 'Provider Name', fieldName: 'Contact_Name__c', type: 'Formula'},
                     {label: 'Enrollment No.', fieldName: 'Enrollment_No__c', type: 'Formula'},
+                    {label: 'Class Scheduled Date', fieldName: 'Date__c', type: 'Date'},
+                    {label: "Attendance Status", fieldName: "Status__c", editable: true, type:"picklist", selectOptions:types}, 
+                    //{label: "Students RSVP", fieldName: "Students_RSVP__c", editable: false, type:"text"}, 
                     {label: "Created Date", fieldName: "CreatedDate", type:"date", sortable: true}
                 ];
                 component.set("v.columns", cols);
@@ -73,7 +75,6 @@
         console.log('action.setParams loadRecords='+action.setParams);
         action.setCallback(this,function(response){
             if(response.getState() === "SUCCESS"){
-                
                 console.log('response getState == '+response.getState());
                 console.log('response getValues == '+response.getReturnValue());
                 
@@ -82,10 +83,11 @@
                 console.log('allRecords.length=='+allRecords.length);
                 console.log('response.getReturnValue()=='+response.getReturnValue());
                 if(allRecords.length == 0){
+                    component.set("v.Message", true);
                     var toastEvent = $A.get("e.force:showToast");
                     toastEvent.setParams({
-                        title : 'Error',
-                        type: 'Error',
+                        title : 'Info:',
+                        type: 'info',
                         message: 'No Make-Up Attendance are left to mark here!',
                         duration:'100',
                         key: 'info_alt',
@@ -119,6 +121,6 @@
                     console.log("Error: "+message);
                 }
                 });
-                    $A.enqueueAction(action);
-  }
+        $A.enqueueAction(action);
+    }
 })

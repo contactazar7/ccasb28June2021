@@ -1,12 +1,14 @@
 ({
     setupTable : function(component,event, helper) {
         var action = component.get("c.getPicklistValues");
+        component.set("v.loaded",false);
         action.setParams({
             objectAPIName: "Attendance__c",
             fieldAPIName: "Status__c"
         });
         action.setCallback(this,function(response){
             if(response.getState() === "SUCCESS"){
+                component.set("v.loaded",true);
                 console.log('response getState == '+response.getState());
                 console.log('response getValues == '+response.getReturnValue());
                 var types = [];
@@ -14,14 +16,13 @@
                 var cols = [
                     {label: "Name ", fieldName: "accountLink", type:"link", sortable: true, resizable:true, 
                      attributes:{label:{fieldName:"Name"}, title:"Click to View(New Window)", target:"_blank"}},
-                    {label: "Attendance Status", fieldName: "Status__c", editable: true, type:"picklist", selectOptions:types}, 
-                    {label: "Students RSVP", fieldName: "Students_RSVP__c", editable: false, type:"text"}, 
+                    {label: 'Enrollment #', fieldName: 'Enrollment_No__c', type: 'Formula'},
+                    {label: 'Provider Name', fieldName: 'Contact_Name__c', type: 'Formula'},
+                    //{label: "Students RSVP", fieldName: "Students_RSVP__c", editable: false, type:"text"}, 
                     {label: 'Class Scheduled Date', fieldName: 'Date__c', type: 'Date'},
-                    {label: 'Contact Name', fieldName: 'Contact_Name__c', type: 'Formula'},
-                    {label: 'Enrollment No.', fieldName: 'Enrollment_No__c', type: 'Formula'},
-                    {label: "Created Date", fieldName: "CreatedDate", type:"date", sortable: true}
-                    
-                ];
+                   	{label: "Attendance Status", fieldName: "Status__c", editable: true, type:"picklist", selectOptions:types}, 
+					{label: "Created Date", fieldName: "CreatedDate", type:"date", sortable: true}
+              ];
                 component.set("v.columns", cols);
                 this.loadRecords(component);
             }else{
@@ -40,7 +41,7 @@
         action.setParams({
             'recId': component.get("v.id")
         });
-       	action.setCallback(this,function(response){
+        action.setCallback(this,function(response){
             if(response.getState() === "SUCCESS"){
                 var allRecords = response.getReturnValue();
                 if(allRecords.length == 0){
@@ -48,7 +49,7 @@
                     toastEvent.setParams({
                         title : 'Error',
                         type: 'Error',
-                        message: 'No records has found on requested date.',
+                        message: 'No records has found',
                         duration:'100',
                         key: 'info_alt',
                         mode: 'dismissible'
@@ -76,6 +77,6 @@
                     component.set("v.error", message);
                 }
                 });
-                    $A.enqueueAction(action);
-  }
-})
+         $A.enqueueAction(action);
+     }
+ })

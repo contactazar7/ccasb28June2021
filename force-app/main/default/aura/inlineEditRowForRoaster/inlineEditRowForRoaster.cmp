@@ -10,7 +10,7 @@
     <aura:attribute name="chooseRecdate" type="string" description="use to store the value in Date Format for Make-Up Class"/>
     <aura:attribute name="chooseRecStartTime" type="string" description="use to store the value in Start Time Format for Make-Up Class"/>
     <aura:attribute name="chooseRecEndTime" type="string" description="use to store the value in End Time Format for Make-Up Class"/>
-	<aura:attribute name="objInfoForPicklistValues" type="Roaster__c" default="{sobjectType : 'Roaster__c'}" description="object information to fetch picklist values"/>
+    <aura:attribute name="objInfoForPicklistValues" type="Roaster__c" default="{sobjectType : 'Roaster__c'}" description="object information to fetch picklist values"/>
     <aura:attribute name="ratingPicklistOpts" type="string[]" description="store picklist options values"/> 
     <aura:attribute name="showSaveCancelBtn" type="boolean"/>
     <aura:attribute name="showErrorClass" type="boolean" default="false"/>
@@ -33,14 +33,14 @@
     <!--Table Row Start-->  
     
     <tr>
-       
-        <td data-label="File Name">
-            <div class="slds-truncate" title="File Name">
+        
+        <td>
+            <div class="slds-truncate">
                 <a target="_blank" href="{!'/'+v.singleRec.Id}">  {!v.singleRec.Name}</a>	
             </div>  
         </td>
-        <td data-label="File Name">
-            <div class="slds-truncate" title="File Name">
+        <td>
+            <div class="slds-truncate">
                 {!v.singleRec.Class_Scheduled_Date__c}	
             </div>  
         </td>
@@ -49,12 +49,12 @@
                 <!-- show input and output section based on boolean flag --> 
                 <aura:if isTrue="{!v.moduleEditMode == false}">
                     <span class="slds-truncate" title="Rating">{!v.singleRec.Module__r.Name}</span>
-                    <button onclick="{!c.inlineEditModule}" class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="0" title="Edit Rating">
+                    <button onclick="{!c.inlineEditModule}" class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="0">
                         <lightning:icon iconName="utility:edit" size="xx-small" alternativeText="edit"/>
                     </button>
                     <!-- Inline Edit Section in else case-->  
-                   <aura:set attribute="else">
-                        <lightning:recordEditForm  recordId="{!v.singleRec.Id}" aura:id="form" objectApiName="Roaster__c"  onload="{!c.onload}"   >
+                    <aura:set attribute="else">
+                        <lightning:recordEditForm  recordId="{!v.singleRec.Id}" aura:id="form" objectApiName="Roaster__c"  onload="{!c.onload}">
                             <lightning:messages />
                             <lightning:inputField fieldName="Module__c"   aura:id="module"      
                                                   value="{!v.singleRec.Module__c}" onchange="{!c.onmoduleChange}"/>
@@ -64,18 +64,18 @@
             </span>
         </td>
         <td>
-            <span class="slds-truncate" title="Rating"><lightning:formattedDateTime value="{!v.singleRec.Start_Time__c}" hour="2-digit" minute="2-digit" timeZone="UTC"
-                                                                                    timeZoneName="short" /></span>    
+            <span class="slds-truncate"><lightning:formattedDateTime value="{!v.singleRec.Start_Time__c}" hour="2-digit" minute="2-digit" timeZone="UTC"
+                                                                     timeZoneName="short" /></span>    
         </td>
         <td>
-            <span class="slds-truncate" title="Rating"><lightning:formattedDateTime value="{!v.singleRec.End_Time__c}" hour="2-digit" minute="2-digit" timeZone="UTC"
-                                                                                    timeZoneName="short" /></span> 
+            <span class="slds-truncate"><lightning:formattedDateTime value="{!v.singleRec.End_Time__c}" hour="2-digit" minute="2-digit" timeZone="UTC"
+                                                                     timeZoneName="short" /></span> 
         </td> 
         <td ondblclick="{!c.inlineEditStatus}" class="slds-cell-edit">
             <span class="slds-grid slds-grid_align-spread">
                 <aura:if isTrue="{!v.statusEditMode == false}">
-                    <span class="slds-truncate" title="Rating">{!v.singleRec.Status__c}</span>
-                    <button onclick="{!c.inlineEditStatus}" class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="0" title="Edit Rating">
+                    <span class="slds-truncate" >{!v.singleRec.Status__c}</span>
+                    <button onclick="{!c.inlineEditStatus}" class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="0" >
                         <lightning:icon iconName="utility:edit" size="xx-small" alternativeText="edit"/>
                     </button>
                     <aura:set attribute="else">
@@ -99,36 +99,45 @@
                 </aura:if> 
             </span>
         </td> 
-       <td data-label="File Name" style="text-align:center">
-            <div class="slds-truncate" title="File Name">
-                 {!v.singleRec.Total_Present__c} 	
+        <td data-label="File Name" style="text-align:center">
+            <div class="slds-truncate" >
+                {!v.singleRec.Total_Present__c} 	
             </div>  
         </td>
-        <td data-label="File Name" style="text-align:center">
-            <div class="slds-truncate" title="File Name">
+        <td style="text-align:center">
+            <aura:if isTrue='{!v.singleRec.count_of_overall_make_up__c  > 0}'>
+                <lightning:progressRing value="100" size="large" variant="base-autocomplete" />
+                <aura:set attribute="else">Nil</aura:set>
+            </aura:if>
+        </td>
+        <!-- <td data-label="File Name" style="text-align:center">
+            <div class="slds-truncate">
                 {!v.singleRec.Total_Absent__c} 		
             </div>  
-        </td> 
+        </td> -->
         <td style="text-align:center">
-            <aura:if isTrue='{!lessthan(((v.singleRec.Total_Present__c/v.singleRec.Count_of_Enrollment__c)*100), 1)}'>
-            <lightning:progressRing value="{!((v.singleRec.Total_Present__c/v.singleRec.Count_of_Enrollment__c)*100)}" size="large" variant="warning" />
-            <aura:set attribute="else">
-                <aura:if isTrue='{!((v.singleRec.Total_Present__c/v.singleRec.Count_of_Enrollment__c)*100) == 100}'>
-                    <lightning:progressRing value="{!((v.singleRec.Total_Present__c/v.singleRec.Count_of_Enrollment__c)*100)}" size="large" variant="base-autocomplete" />
-                    <aura:set attribute="else">
-                        <lightning:progressRing value="{!((v.singleRec.Total_Present__c/v.singleRec.Count_of_Enrollment__c)*100)}" size="large" variant="active-step"/>
-                    </aura:set>
-                </aura:if>
-            </aura:set>
-        </aura:if>
+            <aura:if isTrue='{!lessthan((((v.singleRec.Total_Present_For_Regular__c +v.singleRec.Total_Present_For_Make_Up__c)/v.singleRec.Count_of_Enrollment__c)*100), 1)}'>
+                <lightning:progressRing value="{!((v.singleRec.Total_Present__c/v.singleRec.Count_of_Enrollment__c)*100)}" size="large" variant="warning" />
+                <aura:set attribute="else">
+                    <aura:if isTrue='{!(((v.singleRec.Total_Present_For_Regular__c +v.singleRec.Total_Present_For_Make_Up__c)/v.singleRec.Count_of_Enrollment__c)*100) == 100}'>
+                        <lightning:progressRing value="{!(((v.singleRec.Total_Present_For_Regular__c +v.singleRec.Total_Present_For_Make_Up__c)/v.singleRec.Count_of_Enrollment__c)*100)}" size="large" variant="base-autocomplete" />
+                        <aura:set attribute="else">
+                            <lightning:progressRing value="{!(((v.singleRec.Total_Present_For_Regular__c +v.singleRec.Total_Present_For_Make_Up__c)/v.singleRec.Count_of_Enrollment__c)*100)}" size="large" variant="active-step"/>
+                        </aura:set>
+                    </aura:if>
+                </aura:set>
+            </aura:if>
         </td> 
-     <!--
-        <td data-label="File Name">
+        
+       <!--  <td data-label="File Name">
             <div class="slds-truncate" title="File Name">
-                TA- {!v.singleRec.Total_Absent__c} 	
+                TA- {!v.singleRec.Total_Absent__c},
+              TP+TM  - {!(v.singleRec.Total_Present_For_Regular__c +v.singleRec.Total_Present_For_Make_Up__c)},	
+                TP- {!v.singleRec.Total_Present__c},
+                TE- {!v.singleRec.Count_of_Enrollment__c}
             </div>  
         </td>
-        <td data-label="File Name">
+       <td data-label="File Name">
             <div class="slds-truncate" title="File Name">
                 PR- {!v.singleRec.Total_Present_For_Regular__c} 	
             </div>  
@@ -155,21 +164,32 @@
         </td>
         <td data-label="File Name">
             <div class="slds-truncate" title="File Name">
-               MC- {!v.singleRec.Make_Up_Count__c}				
+                open - {!v.singleRec.Az_Make_up_Open__c}
+                MC- {!v.singleRec.Make_Up_Count__c}
+               AC - {!v.singleRec.Count_of_Make_up_Attendance__c}
+               
             </div>  
         </td> -->
         <td>
-            <span class="slds-truncate" title="Button">
-                <p style="padding-bottom:2px;"><lightning:button variant="brand-outline" label="Create Attendance" title="Base action" onclick="{! c.createAttendance}" disabled="{!v.singleRec.Count_Of_Regular_Attendance__c > 0}"/></p>
-                <p style="padding-bottom:2px;"><lightning:button variant="brand-outline" label="Mark Attendance  " title="Base action" onclick="{! c.markregularAttendance}" disabled="{!(v.singleRec.Total_Present_For_Regular__c + v.singleRec.Total_Absent_For_Regular__c ) == (v.singleRec.Count_Of_Regular_Attendance__c)}"/></p> 
-            </span>
+            <lightning:layout>
+                <lightning:layoutItem size="12">
+                    <span class="slds-truncate" title="Button">
+                        <p style="padding-bottom:2px;"><lightning:button variant="brand-outline" label="Create Attendance" title="Base action" onclick="{! c.createAttendance}" disabled="{!v.singleRec.Count_Of_Regular_Attendance__c > 0}"/></p>
+                        <p style="padding-bottom:2px;"><lightning:button variant="brand-outline" label="Mark Attendance  " title="Base action" onclick="{! c.markregularAttendance}" disabled="{!(v.singleRec.Total_Present_For_Regular__c + v.singleRec.Total_Absent_For_Regular__c ) == (v.singleRec.Count_Of_Regular_Attendance__c)}"/></p> 
+                    </span>
+                </lightning:layoutItem>
+            </lightning:layout>
         </td>
         <td>
-            <span class="slds-truncate" title="Button">
-                <p style="padding-bottom:2px;"><lightning:button variant="brand-outline" label="Create Make-Up Class" title="Base action" onclick="{! c.createMakeUpClass}" disabled="{!((v.singleRec.Total_Absent__c == 0) ||  (v.singleRec.Total_Present__c == v.singleRec.Count_of_Enrollment__c) || (v.singleRec.Count_of_Make_up_Attendance__c)>0)}" /></p> 
-                <p style="padding-bottom:2px;"><lightning:button variant="brand-outline" label="Add To Make-Up Class" title="Base action" onclick="{! c.addmakeupAttendance}" disabled="{!((v.singleRec.Total_Absent__c == 0) ||  (v.singleRec.Total_Present__c == v.singleRec.Count_of_Enrollment__c) || (v.singleRec.Make_Up_Count__c == 0))}" /></p>
-                <p style="padding-bottom:2px;"><lightning:button variant="brand-outline" label="Mark Make-Up Class  " title="Base action" onclick="{! c.markmakeupAttendance}" disabled="{!(v.singleRec.Count_of_Make_up_Attendance__c == 0) || (v.singleRec.Total_Present__c == v.singleRec.Count_of_Enrollment__c)}" /></p>
-            </span>
+            <lightning:layout>
+                <lightning:layoutItem size="12">
+                    <span class="slds-truncate" title="Button">
+                        <p style="padding-bottom:2px;"><lightning:button variant="brand-outline" label="Create Make-Up Class" title="Base action" onclick="{! c.createMakeUpClass}" disabled="{! ((v.singleRec.Az_Make_up_Open__c == true) || ((v.singleRec.Total_Present_For_Regular__c +v.singleRec.Total_Present_For_Make_Up__c) == v.singleRec.Count_of_Enrollment__c) || (v.singleRec.Make_Up_Count__c == 0)) }" /></p> 
+                        <p style="padding-bottom:2px;"><lightning:button variant="brand-outline" label="Add To Make-Up Class" title="Base action" onclick="{! c.addmakeupAttendance}" disabled="{!(v.singleRec.Make_Up_Count__c == 0) || ((v.singleRec.Total_Present_For_Regular__c +v.singleRec.Total_Present_For_Make_Up__c) == v.singleRec.Count_of_Enrollment__c) || (v.singleRec.Az_Make_up_Open__c == false)}" /></p>
+                        <p style="padding-bottom:2px;"><lightning:button variant="brand-outline" label="Mark Make-Up Class  " title="Base action" onclick="{! c.markmakeupAttendance}" disabled="{!v.singleRec.Count_of_Make_up_Attendance__c == 0}"/></p>
+                    </span>
+                </lightning:layoutItem>
+            </lightning:layout>
         </td>
     </tr>
     <aura:if isTrue="{!v.showModal}">
@@ -186,38 +206,38 @@
                 <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" style="height: 250px;">
                     <lightning:layout >
                         <lightning:layoutItem flexibility="auto" padding="around-small" >
-                        <div class="slds-form-element slds-size_1-of-1">
-                            <div class="custom-box">
-                                <lightning:input value="{!v.chooseRecdate}"                                                     
-                                                placeholder="Search..."
-                                                aura:id="searchdate"
-                                                type="date"
-                                                dateStyle="short" 
-                                                label="Class Scheduled"
-                            /> 
+                            <div class="slds-form-element slds-size_1-of-1">
+                                <div class="custom-box">
+                                    <lightning:input value="{!v.chooseRecdate}"                                                     
+                                                     placeholder="Search..."
+                                                     aura:id="searchdate"
+                                                     type="date"
+                                                     dateStyle="short" 
+                                                     label="Class Scheduled"
+                                                     /> 
+                                </div>
                             </div>
-                        </div>
                         </lightning:layoutItem>
                         <lightning:layoutItem flexibility="auto" padding="around-small">
                             <div class="slds-form-element slds-size_1-of-1">
-                            <lightning:input value="{!v.chooseRecStartTime}"                                                     
-                                            placeholder="Search..."
-                                            aura:id="searchStartTime"
-                                            type="Time"
-                                            dateStyle="short" 
-                                            label="Class Start Time"
-                            />
+                                <lightning:input value="{!v.chooseRecStartTime}"                                                     
+                                                 placeholder="Search..."
+                                                 aura:id="searchStartTime"
+                                                 type="Time"
+                                                 dateStyle="short" 
+                                                 label="Class Start Time"
+                                                 />
                             </div>
                         </lightning:layoutItem>   
                         <lightning:layoutItem flexibility="auto" padding="around-small">
                             <div class="slds-form-element slds-size_1-of-1">
-                            <lightning:input value="{!v.chooseRecEndTime}"                                                     
-                                            placeholder="Search..."
-                                            aura:id="searchEndTime"
-                                            type="Time"
-                                            dateStyle="short" 
-                                            label="Class End Time"
-                            />  
+                                <lightning:input value="{!v.chooseRecEndTime}"                                                     
+                                                 placeholder="Search..."
+                                                 aura:id="searchEndTime"
+                                                 type="Time"
+                                                 dateStyle="short" 
+                                                 label="Class End Time"
+                                                 />  
                             </div>
                         </lightning:layoutItem>
                     </lightning:layout>
@@ -235,5 +255,5 @@
             </div>
         </section>
         <div class="slds-backdrop slds-backdrop_open"></div>
-      </aura:if>
+    </aura:if>
 </aura:component>

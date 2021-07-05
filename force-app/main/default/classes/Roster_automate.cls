@@ -40,7 +40,13 @@ public with sharing class Roster_automate {
         List<Roaster__c> roasterLists = [select id,Class_Name__c,Module__c,Session_Order_Number__c,Class_Name__r.id,Start_Time__c,End_Time__c,Class_Scheduled_Date__c,Status__c From Roaster__c where Class_Name__r.id=:cls.id];
        
         List<Modules__c> modulelists = [select id, Name, Class_Category__c, Is_Active__c, Is_it_a_Mandatory_module__c, Module_Order_number__c From Modules__c where  Class_Category__c=:cls.Class_Category__c];
-        weeksession.addAll(cls.Class_Days__c.split(';'));
+        if(cls.Class_Days__c <> null){ 
+            system.debug(' cls.Class_Days__c ' + cls.Class_Days__c);
+          weeksession.addAll(cls.Class_Days__c.split(';'));
+        }else{
+           message = 'Please make ensure that class would contains start date and end date!'; 
+        }
+       
         
         Days = cls.Days__c;
         startDate = cls.Start_Date__c - 1 ;

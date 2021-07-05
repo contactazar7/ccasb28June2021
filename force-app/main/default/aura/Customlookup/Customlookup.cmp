@@ -95,10 +95,11 @@
                                                         <lightning:inputField fieldName="Class_ID__c"/>
                                                         <lightning:inputField fieldName="Name" required="true"/>
                                                         <lightning:inputField fieldName="RecordTypeId" aura:Id="recro" value="{!v.DaysValues.RecordTypeId}" disabled="{!v.disarecordtype}"/>
-                                                               <lightning:inputField fieldName="Class_Category__c" value="{!v.DaysValues.Class_Category__c}"/>
+                                                               <lightning:inputField fieldName="Class_Category__c" value="{!v.DaysValues.Class_Category__c}" disabled="{!v.allfields}"/>
+              <lightning:inputField fieldName="Class_Course__c" value="{!v.selectedRecord3.Id}" class="slds-hide" />
 
-                                                        <lightning:inputField fieldName="Class_Course__c" value="{!v.selectedRecord3.Id}" class="slds-hide"/>
-                                                         <div onmouseleave="{!c.onblur3}" aura:id="searchRes3" class="slds-form-element slds-lookup slds-is-close" data-select="single">
+                                                          <aura:if  isTrue="{!v.allfields == false}">
+                                                        <div onmouseleave="{!c.onblur3}" aura:id="searchRes3" class="slds-form-element slds-lookup slds-is-close" data-select="single">
         <label class="slds-form-element__label" for="lookup-348">Class Course</label>
         <!--This part is for display search bar for lookup-->  
         <div class="slds-form-element__control">
@@ -106,7 +107,7 @@
             <div class="slds-input-has-icon slds-input-has-icon--right class-course">
                 <!-- This markup is for when an record is selected -->
                 <div aura:id="lookup-pill3" class="slds-pill-container slds-hide">
-                     <lightning:pill class="pillSize" label="{!v.selectedRecord3.Name}" name="{!v.selectedRecord3.Name}" onremove="{! c.clear3 }">
+                     <lightning:pill class="pillSize" label="{!v.selectedRecord3.Name}" name="{!v.selectedRecord3.Name}" onremove="{! c.clear3 }" >
                           <aura:set attribute="media">
                              <lightning:icon iconName="standard:account" size="x-small" alternativeText="{!v.IconName}"/>
                           </aura:set>
@@ -118,7 +119,7 @@
                         <lightning:icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" iconName="standard:account" size="x-small" alternativeText="icon"/>
                         <span class="slds-assistive-text"></span>
                     </span>
-                    <ui:inputText click="{!c.onfocus3}" updateOn="keyup" keyup="{!c.keyPressController3}" class="slds-lookup__search-input slds-input leftPaddingClass" value="{!v.SearchKeyWord3}" placeholder="search.."/>
+                    <ui:inputText click="{!c.onfocus3}" updateOn="keyup" keyup="{!c.keyPressController3}" class="slds-lookup__search-input slds-input leftPaddingClass" value="{!v.SearchKeyWord3}" placeholder="search.." />
                 </div>   
             </div>
         </div>
@@ -130,10 +131,15 @@
                 <c:ClassCoursecustomLookupResult oRecord="{!singleRec}" IconName="{!v.IconName}"/>
             </aura:iteration>
         </ul>
-    </div>   
+    </div>    <aura:set attribute="else">
+              <lightning:inputField fieldName="Class_Course__c" value="{!v.selectedRecord3.Id}" disabled="{!v.allfields}" />
+
+    </aura:set></aura:if>
+                                                                   <lightning:inputField fieldName="Course_Name__c" />
+
                                                           <lightning:inputField fieldName="Language__c" />
 
-                                                     <lightning:inputField fieldName="Is_it_a_CNA_Other_class__c" required="true"/>
+                                                     <lightning:inputField fieldName="Is_it_a_CNA_Other_class__c" required="true" disabled="{!v.allfields}"/>
                                                         <lightning:inputField fieldName="Class_Mode__c"/>
                                                          <lightning:inputField fieldName="Facility__c"/>
                                                          <lightning:inputField fieldName="Zoom_Meeting_Link__c"/>
@@ -378,6 +384,8 @@
             </aura:iteration>
         </ul>
                                                     </div>
+                                                                <lightning:inputField fieldName="Instructor_1__c"/>
+
             <lightning:inputField fieldName="Class_type__c" value="{!v.selectedRecord.Type_of_Instructor__c}" disabled="{!v.fielddisabled}"/>
                                                     <lightning:inputField fieldName="Classes_assigned_to_Instructor_1__c" value="{!v.TotalNumberOfRecord}" disabled="{!v.fielddisabled}"/>
                                                 </div></span></div><div class="slds-col">
@@ -420,6 +428,8 @@
                                                                     </aura:iteration>
                                                                 </ul>
                                                             </span></div></div>
+                                                             <lightning:inputField fieldName="Instructor_2__c"/>
+
                                                     <lightning:inputField fieldName="Instructor_Id_2_Type__c" value="{!v.selectedRecord1.Type_of_Instructor__c}" disabled="{!v.fielddisabled}"/>
                                                     
                                                     <lightning:inputField fieldName="Classes_assigned_to_Instructor_2__c" value="{!v.TotalNumberOfRecord1}" disabled="{!v.fielddisabled}"/>

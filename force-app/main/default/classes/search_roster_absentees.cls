@@ -28,8 +28,8 @@ public class search_roster_absentees {
         system.debug('makeup_id with roster records ' + roster_id);
         List < Attendance__c > returnList = [Select id,Students_RSVP__c,createdDate,name,Class_Name__c,Enrollment_No__c,Enrollment__r.name,MakeUp_Created__c,
                                              Roaster_No__c,Contact_Name__c,Class__c,Class__r.id,Class__r.Name,Contact__c,Contact__r.id,
-                                             Contact__r.Name,Date__c,Enrollment__c,Roaster__c,Status__c,Make_Up_Class__c,Makeup_Class_status__c,
-                                             Has_Make_Up_Class__c from Attendance__c where ( Roaster__r.id IN: roster_id and Status__c='Absent' and Makeup_Class_status__c ='Need to attend make-up class' and MakeUp_Created__c = false) or (Make_Up_Class__r.id=: makeup_id and Status__c='Absent' and Makeup_Class_status__c ='Absent' and MakeUp_Created__c = false)];
+                                             Contact__r.Name,Date__c,Enrollment__c,Enrollment__r.Approval_Status__c,Enrollment__r.Status__c,Roaster__c,Status__c,Make_Up_Class__c,Makeup_Class_status__c,
+                                             Has_Make_Up_Class__c from Attendance__c where (( Roaster__r.id IN: roster_id and Status__c='Absent' and Makeup_Class_status__c ='Need to attend make-up class' and MakeUp_Created__c = false) or (Make_Up_Class__r.id=: makeup_id and Status__c='Absent' and Makeup_Class_status__c ='Absent' and MakeUp_Created__c = false)) and ((Enrollment__r.Approval_Status__c = '' or Enrollment__r.Approval_Status__c = 'Approved') and Enrollment__r.Status__c= 'Enrolled')];
         system.debug('makeup_id with roster records ' + returnList);
         system.debug('makeup_id with roster records size ' + returnList.size()); 
         return returnList;
@@ -37,6 +37,7 @@ public class search_roster_absentees {
     @AuraEnabled
     public static List<Attendance__c > createAtdrecords(List<Id> jsonString, string recId){
         List<Attendance__c > recordslist = new List<Attendance__c >();
+        List<Approval_for_Makeup__c> approvalMakeup = new List<Approval_for_Makeup__c>();
         List<Make_Up_Class__c> make_up_Class;
         set<Id> rosterid = new set<Id>();
         set<Id> enrollmentAttId = new set<Id>();
@@ -54,11 +55,11 @@ public class search_roster_absentees {
             
             //If condition based on the Id name - Roster or Make Up  
             if(string.valueof(Id.valueOf(recId).getsobjecttype()) == 'Roaster__c'){
-                make_up_Class = [select id, Roster_Name__c, Roster_Name__r.id, Class__c , Class__r.id, Class_Scheduled_Date__c from Make_Up_Class__c where Roster_Name__c=:recId];
+                make_up_Class = [select id, Roster_Name__c, Roster_Name__r.id, Class__c , Class__r.id, Class_Scheduled_Date__c from Make_Up_Class__c where Roster_Name__c=:recId and Status__c='Open'];
                 system.debug(' make_up_Class '+make_up_Class);
                 system.debug(' make_up_Class size '+make_up_Class.size());
             }else if(string.valueof(Id.valueOf(recId).getsobjecttype()) == 'Make_Up_Class__c'){
-                make_up_Class = [select id, Roster_Name__c, Roster_Name__r.id, Class__c , Class__r.id, Class_Scheduled_Date__c from Make_Up_Class__c where id=:recId];
+                make_up_Class = [select id, Roster_Name__c, Roster_Name__r.id, Class__c , Class__r.id, Class_Scheduled_Date__c from Make_Up_Class__c where id=:recId and Status__c='Open'];
                 system.debug(' make_up_Class '+make_up_Class);
                 system.debug(' make_up_Class size '+make_up_Class.size());
             }
@@ -96,8 +97,9 @@ public class search_roster_absentees {
                 
                 system.debug(' enrollmentAttId ' + enrollmentAttId);
                 system.debug(' EnrollMent Number Size ' + enrollmentAttId.size());
-                List<SFDC_Enrollment__c > enrollment_recs = [select Id, Name, Contact__c, Contact__r.name, Class__c , MakeUp_count__c , Severity__c  From SFDC_Enrollment__c where id In:enrollmentAttId];
+                List<SFDC_Enrollment__c > enrollment_recs = [select Id, Name, Contact__c,Status__c,Approval_Status__c,Contact__r.name, Class__c , MakeUp_count__c , Severity__c  From SFDC_Enrollment__c where id In:enrollmentAttId];
                 system.debug(' Enrollement that needs to be Updated ' + enrollment_recs);
+                
                 
                 
                 for(SFDC_Enrollment__c en : enrollment_recs){
@@ -111,9 +113,31 @@ public class search_roster_absentees {
                     }else if((en.MakeUp_count__c) == 2){
                         system.debug('en.MakeUp_count__c == 2 ' +en.MakeUp_count__c);
                         en.Severity__c = 'Medium';
+                        if(en.Approval_Status__c== null){
+                            en.Approval_Status__c = 'Pending Approval';
+                            Approval_for_Makeup__c app = new Approval_for_Makeup__c();
+                            app.Enrollment__c = en.id;
+                            app.Provider_Name__c = en.Contact__c;
+                            app.Status__c = 'Pending Approval';
+                            app.Class_Session__c = recId;
+                            app.Class_Name__c = en.Class__c;
+                            approvalMakeup.add(app);
+                            
+                        }
                     }else if((en.MakeUp_count__c) >2){
                         system.debug('en.MakeUp_count__c > 2' +en.MakeUp_count__c);
                         en.Severity__c = 'High';
+                        if(en.Approval_Status__c == 'Approved'){
+                            en.Approval_Status__c = 'Pending Approval';
+                            Approval_for_Makeup__c app = new Approval_for_Makeup__c();
+                            app.Enrollment__c = en.id;
+                            app.Provider_Name__c = en.Contact__c;
+                            app.Status__c = 'Pending Approval';
+                            app.Class_Session__c = recId;
+                            app.Class_Name__c = en.Class__c;
+                            approvalMakeup.add(app);
+                        }
+                        
                     }
                     system.debug('enrollment_recs update makeupcount '+enrollment_recs);
                 }   
@@ -121,14 +145,16 @@ public class search_roster_absentees {
                 update enrollment_recs;
                 system.debug('enrollment_recs '+enrollment_recs);
                 system.debug('enrollment_recs size '+enrollment_recs.size());
+
+                if(!enrollment_recs.isEmpty()){Insert approvalMakeup;}
                 
                 system.debug('rosterid from search Roster absentees '+rosterid);    
-                List<Roaster__c> rosterlist= [select id,Class_Name__c,Make_Up_Count__c,Status__c,Count_of_Enrollment__c,Total_Present__c from Roaster__c where Id IN:rosterid];
+                List<Roaster__c> rosterlist= [select id,Class_Name__c,Count_of_Make_up_Attendance__c,Az_Make_up_Open__c,Make_Up_Count__c,Status__c,Count_of_Enrollment__c,Total_Present__c from Roaster__c where Id IN:rosterid];
                 system.debug('rosterlist '+rosterlist);  
                 system.debug('rosterlist size '+rosterlist.size());  
                 
                 for(Roaster__c r: rosterlist){
-                    if(r.Make_Up_Count__c > 0){
+                    if(r.Count_of_Make_up_Attendance__c > 0){
                         r.Status__c = 'Make-Up Ongoing';
                     }
                 } 

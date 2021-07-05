@@ -10,7 +10,6 @@
     <aura:handler name="init" value="{!this}" action="{!c.onPageReferenceChange}"/>
     <aura:handler name="change" value="{!v.pageReference}" action="{!c.onPageReferenceChange}"/>
     <aura:attribute name="loaded" type="Boolean" default="false" />
-    
     <aura:attribute name="id" type="String" />
     <aura:attribute name="recLimits" type="string" default="100" description="Use to Search the Provider limits" />
     <aura:attribute name="searchName" type="string" description="Use to Search the Provider Name" />
@@ -43,7 +42,6 @@
     <c:providerRecruitmentProgram sObjectName="Contact" fieldName="Recruitment_Program__c" picklistValues="{!v.providerRecruitmentProgram}" /> 
     <aura:attribute name="providerRecruitmentTypePicklistValues" type="Object" description="use for store and display provider Recruitment Type that's return from server"/>
     <c:providerRecruitmentTypePicklistValues sObjectName="Contact" fieldName="Recruitment_Type__c" picklistValues="{!v.providerRecruitmentTypePicklistValues}" /> 
-    
     <aura:attribute name="recruiter_program" type="string" description="use for store the Provider Recruitment_Program that will send to Server"/>
     <aura:attribute name="recruitment_type" type="string" description="use for store the Provider recruitment_type that will send to Server"/>
     <aura:attribute name="recruiterW_WO" type="string" description="use for store the Provider Recruiter with and Without that will send to Server"/> 
@@ -53,16 +51,8 @@
     <aura:attribute name="sortDirection" type="String" default="asc" />
     <aura:attribute name="defaultSortDirection" type="String" default="asc" />
     <aura:attribute name="sortedBy" type="String" />
-    
     <aura:attribute name="recruiter_programToUpd" type="string" description="Use to Store the Recruitment Program Picklist Values that needs to be updated"/>
     <aura:attribute name="recruitment_typeToUpd" type="string" description="use for store the Provider Recruitment Type that will send to Server"/>
-    
-    <aura:attribute name="providerRecruitmentProgramAssign" type="Object" description="use for store the Provider Langauge and display provider list return from server"/>
-    <c:providerRecruitmentProgramAssign sObjectName="Contact" fieldName="Recruitment_Program__c" picklistValues="{!v.providerRecruitmentProgramAssign}" /> 
-    <aura:attribute name="providerRecruitmentTypeAssign" type="Object" description="use for store the Provider Langauge and display provider list return from server"/>
-    <c:providerRecruitmentTypeAssign sObjectName="Contact" fieldName="Recruitment_Type__c" picklistValues="{!v.providerRecruitmentTypeAssign}" /> 
-    
-    
     
     <div class="slds-template__container">
         <lightning:spinner variant="brand" size="large" aura:id="Id_spinner" class="slds-hide" />
@@ -71,7 +61,7 @@
                 <lightning:layout >
                     <lightning:layoutItem padding="around-small" size="2" >
                         <div class="slds-form-element slds-size_1-of-1">
-                            <lightning:select value="{!v.planguage}" label="Choice of Language" aura:id="searchpro_language" onchange="{!c.Search}">    
+                            <lightning:select value="{!v.planguage}" label="Choice of Class Language" aura:id="searchpro_language" onchange="{!c.Search}">    
                                 <option value="">Choose one…</option>
                                 <aura:iteration items="{!v.providerLangPicklistval}" var="item">
                                     <option value="{!item.value}">
@@ -188,7 +178,7 @@
                             <lightning:input value="{!v.recLimits}"                                                     
                                              placeholder="Search..."
                                              aura:id="limits"
-                                             label="Upto 100"
+                                             label="Choose Size(Upto 100)"
                                              onchange="{!c.Search}"/> </div>
                     </lightning:layoutItem>
                 </lightning:layout>
@@ -225,7 +215,13 @@
                                              defaultSortDirection="{!v.defaultSortDirection}" sortedDirection="{!v.sortDirection}" 
                                              sortedBy="{!v.sortedBy}" onsort="{!c.handleSort}" />                       
                         <aura:set attribute="else">
-                            <lightning:spinner alternativeText="Loading" />
+                            <div aura:id="spinnerId" class="slds-spinner_container">
+                                <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                                    <span class="slds-assistive-text">Loading...</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
                         </aura:set>
                     </aura:if>
                 </div>
@@ -262,7 +258,7 @@
                             <div class="slds-form-element slds-size_1-of-1">
                                 <lightning:select value="{!v.recruiter_programToUpd}" label="Recruitment Program" aura:id="searchpro_Program">    
                                     <option value="">Choose one…</option>
-                                    <aura:iteration items="{!v.providerRecruitmentProgramAssign}" var="item">
+                                    <aura:iteration items="{!v.providerRecruitmentProgram}" var="item">
                                         <option value="{!item.value}">
                                             {!item}
                                         </option>
@@ -272,7 +268,7 @@
                             <div class="slds-form-element slds-size_1-of-1">
                                 <lightning:select value="{!v.recruitment_typeToUpd}" label="Recruitment Type" aura:id="searchpro_RecruitmentType">    
                                     <option value="">Choose one…</option>
-                                    <aura:iteration items="{!v.providerRecruitmentTypeAssign}" var="item">
+                                    <aura:iteration items="{!v.providerRecruitmentTypePicklistValues}" var="item">
                                         <option value="{!item.value}">
                                             {!item}
                                         </option>

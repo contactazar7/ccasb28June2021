@@ -7,7 +7,9 @@
             $A.util.removeClass(forOpen, 'slds-is-close');
         // Get Default 5 Records order by createdDate DESC  
          var getInputkeyWord = '';
-         helper.searchHelper(component,event,getInputkeyWord);
+         helper.mondayafterand(component,event,getInputkeyWord);
+        //  helper.searchHelper(component,event,getInputkeyWord);
+
     },
     onfocus1 : function(component,event,helper){
        $A.util.addClass(component.find("mySpinner"), "slds-show");
@@ -826,5 +828,4 @@ timeString = h + timeString.substr(2, 3) + whiteSpace+ ampm;
             $A.util.removeClass(lookUpTarget, 'slds-show');  
       
 	},
-   
 })

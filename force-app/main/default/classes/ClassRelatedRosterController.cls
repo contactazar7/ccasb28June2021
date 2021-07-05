@@ -9,7 +9,7 @@ public with sharing class ClassRelatedRosterController
     @AuraEnabled
     public static list<Roaster__c> getRelatedList(Id AccId)
     {
-        List<Roaster__c> Conlist = [select id,Count_of_Make_up_Attendance__c,Total_Present__c,Total_Absent__c,Count_of_Enrollment__c,Count_Of_Regular_Attendance__c,Make_Up_Count__c,Total_Present_For_Regular__c,Total_Present_For_Make_Up__c,Total_Absent_For_Regular__c,Total_Absent_For_Make_Up__c,CNA_Status__c,Class_Name__r.Name,Class_Name__r.Start_Date__c,Class_Name__r.End_Date__c,Class_Name__r.Class_Status__c,Class_Name__r.Language__c,Class_Name__r.Students_Enrolled__c,Class_Scheduled_Date__c,End_Date__c,End_Time__c,Start_Date__c,Name,Start_Time__c,Status__c,Module__r.Name,Class_Name__c from Roaster__c where Class_Name__c =: AccId ];
+        List<Roaster__c> Conlist = [select id,count_of_overall_make_up__c,Az_Make_up_Open__c,Count_of_Make_up_Attendance__c,(select id, Class__c, Roster_Name__c,Status__c From Make_Up_Classes__r where Status__c='Open')Total_Present__c,Total_Absent__c,Count_of_Enrollment__c,Count_Of_Regular_Attendance__c,Make_Up_Count__c,Total_Present_For_Regular__c,Total_Present_For_Make_Up__c,Total_Absent_For_Regular__c,Total_Absent_For_Make_Up__c,CNA_Status__c,Class_Name__r.Name,Class_Name__r.Start_Date__c,Class_Name__r.End_Date__c,Class_Name__r.Class_Status__c,Class_Name__r.Language__c,Class_Name__r.Students_Enrolled__c,Class_Scheduled_Date__c,End_Date__c,End_Time__c,Start_Date__c,Name,Start_Time__c,Status__c,Module__r.Name,Class_Name__c from Roaster__c where Class_Name__c =: AccId ];
         return Conlist;
     }
     @AuraEnabled

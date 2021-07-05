@@ -8,22 +8,18 @@
                 year: "numeric",
                 month: "long",
                 day: "2-digit"
-               // month: "2-digit",
-               // day: "2-digit",
-               // year:"2-digit"
             }},
             {label: 'Recruitment Program', fieldName: 'Recruitment_Program__c', type:'picklist', sortable: true},
             {label: 'Recruitment Status', fieldName: 'Recruitment_Status__c', type:'picklist', sortable: true},
             {label: 'Recruitment Assesment', fieldName: 'Recruitment_Assessment__c', type:'picklist', sortable: true},
             {label: 'Recruitment Type', fieldName: 'Recruitment_Type__c', type:'picklist', sortable: true},
-            {label: 'Choice of Language', fieldName: 'Choice_of_Class_Language__c', type:'picklist', sortable: true},
+            {label: 'Choice of Class Language', fieldName: 'Choice_of_Class_Language__c', type:'picklist', sortable: true},
             {label: 'Residing City', fieldName: 'MailingCity', type: 'text', sortable: true},
             {label: 'Residing PostalCode', fieldName: 'MailingPostalCode', type:'text', sortable: true}
         ]);
         var action = component.get("c.fetchValues");
         component.set('v.loaded', false);
         action.setParams({
-            //'OffSets'                  :offSet,
             'searchName'               :component.get("v.searchName"),
             'searchLanguage'           :component.get("v.planguage"),
             'searchProviderID'         :component.get("v.searchProviderID"),
@@ -66,16 +62,6 @@
                 });
                 component.set("v.searchResult", storeResponse);
                 component.set('v.loaded', true);
-                /**
-                var currentData = component.get("v.searchResult");
-                console.log( ' Before Concat searchResult  ' + component.get("v.searchResult").length);
-                
-                component.set("v.searchResult", currentData.concat(storeResponse));
-                console.log( ' currentData.concat ' + currentData.concat(storeResponse));
-                console.log( ' After Concat searchResult ' + component.get("v.searchResult").length);
-                event.getSource().set("v.isLoading", false);
-                console.log( ' event ' + event.getSource().get("v.isLoading"));**/
-                
             }else if (state === "INCOMPLETE") {
                 alert('Response is Incompleted');
             }else if (state === "ERROR") {

@@ -21,7 +21,7 @@ public class ClassManagementController {
     public static List < SFDC_Enrollment__c > fetchEnrollmentDetails(String classId, String contactId ) {
         
         List<SFDC_Enrollment__c> enrollmentList = new List<SFDC_Enrollment__c>();
-        enrollmentList= [SELECT Id,Enrollment__c,Consumer_Count__c, Name,CPR_Status__c,CPR_Valid_From__c, Consumer_Name__c, Consumer_Name__r.Name, Contact__c, Contact__r.Name, Contact__r.Affiliated_Consumer_Count__c, Class__r.Name, Status__c FROM SFDC_Enrollment__c Where Class__c = :classId AND Status__c != 'Student Requested for Removal' Order By Contact__r.Name, Consumer_Name__r.Name];
+        enrollmentList= [SELECT Id,Enrollment__c,Consumer_Count__c, Name,CPR_Status__c,CPR_Valid_From__c, Consumer_Name__c, Consumer_Name__r.Name, Contact__c, Contact__r.Name, Contact__r.Affiliated_Consumer_Count__c, Class__r.Name, Status__c FROM SFDC_Enrollment__c Where Class__c = :classId AND Status__c != 'Student Dropped' Order By Contact__r.Name, Consumer_Name__r.Name];
         return enrollmentList;
     }
     @AuraEnabled
@@ -150,7 +150,7 @@ public class ClassManagementController {
         System.debug('enrollmentId--'+enrollmentId);
         Boolean recordUpdated = true;
         SFDC_Enrollment__c classMngmnt = [SELECT Id,Remove_Reason__c,Remove_Reason_Category__c,Removed_By__c,Removed_On__c, Status__c FROM SFDC_Enrollment__c Where Id = :enrollmentId];
-        classMngmnt.Status__c = 'Student Requested for Removal';
+        classMngmnt.Status__c = 'Student Dropped';
         //classMngmnt.Remove_Reason__c =RemoveReasonId;
         classMngmnt.Id = enrollmentId;
         classMngmnt.Remove_Reason_Category__c = removeReasonCtgry;
@@ -228,6 +228,9 @@ public class ClassManagementController {
                 if(contactMap.containsKey(selectedIds[i])){
                     enrollment.CPR_Status__c = contactMap.get(selectedIds[i]).CPR_Status__c;
                     enrollment.CPR_Valid_From__c = contactMap.get(selectedIds[i]).CPR_Valid_From__c;
+                    //enrollment.Provider_s_Email_Address__c = contactMap.get(selectedIds[i]).Email;
+                    //enrollment.Provider_s_Phone_Number__c = contactMap.get(selectedIds[i]).Phone;
+
                     enrollment.Class__c = classId;
                     enrollment.Status__c = 'Enrolled';
                     enrollmentList.add(enrollment);

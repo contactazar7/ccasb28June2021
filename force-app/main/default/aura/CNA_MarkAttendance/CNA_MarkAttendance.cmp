@@ -2,8 +2,9 @@
     <aura:html tag="style">
         .slds-template__container
         {
-        background-color: #FAFAF9;
-        border-radius: 35px;
+        <!--background-color: #FAFAF9;-->
+        background-color: #FFFFFF;
+        border-radius: 20px;
         }
     </aura:html>
     <aura:attribute name="id" type="String" />

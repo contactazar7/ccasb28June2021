@@ -1,0 +1,160 @@
+<aura:component controller="Mycontroller" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:actionOverride"
+                access="global">
+    
+  
+     <aura:attribute name="oppdata" type="String" default="Test"/>
+    <aura:attribute name="ContactId" type="String" />
+    <aura:attribute name="AccountId" type="String" />
+    <aura:attribute name="test" type="String" />
+   
+    
+    <!--  <aura:handler event="force:refreshView" action="{!c.isRefreshed}" /> -->
+    <aura:attribute name="StageName" type="String" />
+    <aura:attribute name="isAddProduct" type="Boolean" default="false"/>
+    <aura:attribute name="buttonVariant" type="String" default="neutral" />
+    <article class="slds-card">
+        <br/><br/>
+        <div class="slds-p-bottom_large slds-p-left_large" >
+            
+            
+            
+            <lightning:recordEditForm aura:id="editForm" objectApiName="Recruitment_Assessment_Note__c"
+                                      recordTypeId="{!v.recordTypeId}"
+                                      onsubmit="{!c.handleSubmit}" 
+                                      >
+                <lightning:messages />
+                <h3 class="slds-section-title--divider">Information</h3>                       
+                <div class="slds-grid slds-gutters">
+                    
+                    <div class="slds-col">
+                        <div class="slds-size_3-of-1">
+                            <div class="slds-m-left_xx-large">
+                                
+                              
+                                <lightning:inputField fieldName="Name"  label="Participation Assessment Form Name" required="true" style="" value="{!v.oppdata}"/>
+                               
+                                <lightning:inputField fieldName="Provider__c" label="Provider" value="{!v.ContactId}"  style="">
+                                </lightning:inputField>
+                                
+                                <lightning:inputField fieldName="Consumer" label="Consumer"   style="">
+                                </lightning:inputField>
+                                <lightning:inputField fieldName="PAF_Contact_Type__c" label="Contact Type"   style="">
+                                </lightning:inputField>
+                                <lightning:inputField fieldName="PAF_Notes__c" label="Notes" style="">
+                                </lightning:inputField>
+                                <lightning:inputField fieldName="PAF_Quotes__c" label="Quotes"   style="">
+                                </lightning:inputField>
+                                   
+                            </div>                          
+                        </div>
+                    </div>
+                    <div class="slds-col">
+                        <div class="slds-size_3-of-1">
+                            <div class="slds-m-left_xx-large">
+                                <lightning:inputField fieldName="PAF_Recruitment_Assessment__c" label="Recruitment Assessment"  style="">
+                                </lightning:inputField>
+                                <lightning:inputField fieldName="PAF_How_did_you_find_this_provider__c" label="How did you find this provider?" style=""/> 
+                                
+                                <lightning:inputField fieldName="PAF_Follow_Up_When_Where_How__c" label="Follow Up (When? Where? How?)" style=""/>
+                                
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+                
+                <h3 class="slds-section-title--divider">Recruitment Details</h3>                       
+                <div class="slds-grid slds-gutters">
+                    
+                    <div class="slds-col">
+                        <div class="slds-size_3-of-1">
+                            <div class="slds-m-left_xx-large">
+                                <lightning:inputField fieldName="Recruitment_Program__c" styleClass="requiredInput"    style=""/>
+                                <lightning:inputField fieldName="Recruitment_Type__c" styleClass="requiredInput"    style=""/>
+                                
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="slds-col">
+                        <div class="slds-size_3-of-1">
+                            <div class="slds-m-left_xx-large">
+                                <lightning:inputField fieldName="Recruiter_Assigned_Date__c" styleClass="requiredInput"   style="" class="img_1"/> 
+                           <lightning:inputField fieldName="Recruiter__c" styleClass="requiredInput"   style="" class="img_1"/> 
+
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+                
+                <h3 class="slds-section-title--divider">Actual Visit Address Information</h3> 
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <div class="slds-size_3-of-1">
+                            <div class="slds-m-left_xx-large">
+                                <lightning:inputField  fieldName="Override_Address__c" label="Override Address?" style="" />
+                                <lightning:inputField  fieldName="PAF_Address__c" label="Address" style="" />
+                                <lightning:inputField  fieldName="Apt_Suite_Unit__c" label="Apt/Suite/Unit" style="" />
+                                <lightning:inputField  fieldName="PAF_City__c" label="City" style="" />
+                                <lightning:inputField  fieldName="PAF_State__c" label="State" style="" />
+                                <lightning:inputField  fieldName="PAF_Zip__c" label="Zip" style="" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="slds-col">
+                        <div class="slds-size_3-of-1">
+                            <div class="slds-m-left_xx-large">
+                                <div class="slds-m-left_xx-large">
+                                    <lightning:inputField  fieldName="EdFund_Facility__c" label="EdFund Facility" style="" class=""/>
+                                    <lightning:inputField  fieldName="EdFund_Vendor__c" label="EdFund Vendor" style="" class=""/>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+           <h3 class="slds-section-title--divider">Assessment Information</h3> 
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <div class="slds-size_3-of-1">
+                            <div class="slds-m-left_xx-large">
+                                <lightning:inputField  fieldName="PAF_Assessment_Health_Plan__c" label="Assessment Health Plan"  style="" />
+                                <lightning:inputField  fieldName="Assessment_Note__c" label="Assessment Note" style="" />
+                                <lightning:inputField  fieldName="PAF_IHSS_Pay_Stub_ID__c" label="IHSS Pay Stub ID" style="" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="slds-col">
+                        <div class="slds-size_3-of-1">
+                            <div class="slds-m-left_xx-large">
+                                <div class="slds-m-left_xx-large">
+                                    <lightning:inputField  fieldName="PAF_Appointment_Date_Time__c" label="Appointment Date &amp; Time"  style="" class="img_2"/>
+                                    <lightning:inputField  fieldName="PAF_Appointment_Language__c" label="Appointment Language" style="" class="img_2"/>
+                                <lightning:inputField  fieldName="PAF_Appointment_Duration_Estimated__c" label="Appointment Duration (Estimated)" style="" class="img_2"/>
+
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>       
+                
+                
+                
+                <div class="slds-m-top_medium slds-text-align_center">
+                    <Center>
+                        <lightning:button variant="brand" name="Save" label="Save" type="submit" onclick="{!c.handleSubmit}"/>
+                        <lightning:button variant="neutral" type="cancel" name="cancel" label="Cancel" onclick="{!c.onCancel}"/>
+                        
+                        
+                    </Center>
+                </div>
+            </lightning:recordEditForm>  
+            <lightning:navigation aura:id="navService"/>
+       
+        </div>
+    </article>
+</aura:component>
